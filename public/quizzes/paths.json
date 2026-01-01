@@ -1,0 +1,722 @@
+[
+  {
+    "id": "path-001",
+    "track": "paths",
+    "type": "mcq",
+    "instruction": "가변 길이 관계 패턴의 올바른 문법은?",
+    "hint": "[:TYPE*min..max] 형태를 사용한다.",
+    "options": [
+      {
+        "text": "[:R*1..3]",
+        "img": ""
+      },
+      {
+        "text": "[:R{1..3}]",
+        "img": ""
+      },
+      {
+        "text": "[:R*1-3]",
+        "img": ""
+      },
+      {
+        "text": "[:R(1..3)]",
+        "img": ""
+      }
+    ],
+    "answer": "[:R*1..3]",
+    "distractors": [
+      "[:R{1..3}]",
+      "[:R*1-3]",
+      "[:R(1..3)]"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "path-002",
+    "track": "paths",
+    "type": "mcq",
+    "instruction": "관계가 '0번 이상' 반복될 수 있는 가변 길이 표기는?",
+    "hint": "*는 반복을 의미, 0..은 0개도 허용",
+    "options": [
+      {
+        "text": "[:R*0..]",
+        "img": ""
+      },
+      {
+        "text": "[:R*..0]",
+        "img": ""
+      },
+      {
+        "text": "[:R*0-]",
+        "img": ""
+      },
+      {
+        "text": "[:R*]",
+        "img": ""
+      }
+    ],
+    "answer": "[:R*0..]",
+    "distractors": [
+      "[:R*..0]",
+      "[:R*0-]",
+      "[:R*]"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "path-003",
+    "track": "paths",
+    "type": "mcq",
+    "instruction": "아래 중 '정확히 3홉' 가변 길이 표기는?",
+    "hint": "정확히 n번은 *n 또는 *n..n로 표현",
+    "options": [
+      {
+        "text": "[:R*3]",
+        "img": ""
+      },
+      {
+        "text": "[:R*1..3]",
+        "img": ""
+      },
+      {
+        "text": "[:R*..3]",
+        "img": ""
+      },
+      {
+        "text": "[:R*3..]",
+        "img": ""
+      }
+    ],
+    "answer": "[:R*3]",
+    "distractors": [
+      "[:R*1..3]",
+      "[:R*..3]",
+      "[:R*3..]"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "path-004",
+    "track": "paths",
+    "type": "mcq",
+    "instruction": "shortestPath()는 무엇을 반환하나요?",
+    "hint": "최단 경로에 해당하는 Path(경로) 값을 반환",
+    "options": [
+      {
+        "text": "노드 리스트",
+        "img": ""
+      },
+      {
+        "text": "관계 타입",
+        "img": ""
+      },
+      {
+        "text": "Path(경로)",
+        "img": ""
+      },
+      {
+        "text": "정렬된 결과",
+        "img": ""
+      }
+    ],
+    "answer": "Path(경로)",
+    "distractors": [
+      "노드 리스트",
+      "관계 타입",
+      "정렬된 결과"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "path-005",
+    "track": "paths",
+    "type": "mcq",
+    "instruction": "경로 p의 길이(관계 개수)를 구하는 함수는?",
+    "hint": "length(p)는 관계 수(홉 수)를 반환",
+    "options": [
+      {
+        "text": "size(p)",
+        "img": ""
+      },
+      {
+        "text": "len(p)",
+        "img": ""
+      },
+      {
+        "text": "length(p)",
+        "img": ""
+      },
+      {
+        "text": "count(p)",
+        "img": ""
+      }
+    ],
+    "answer": "length(p)",
+    "distractors": [
+      "size(p)",
+      "len(p)",
+      "count(p)"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "path-006",
+    "track": "paths",
+    "type": "mcq",
+    "instruction": "가변 길이 패턴에서 너무 큰 범위를 주면 생길 수 있는 문제는?",
+    "hint": "경로 수가 폭증(조합 폭발)해서 느려질 수 있음",
+    "options": [
+      {
+        "text": "항상 더 빨라진다",
+        "img": ""
+      },
+      {
+        "text": "결과가 0이 된다",
+        "img": ""
+      },
+      {
+        "text": "메모리/시간이 급증할 수 있다",
+        "img": ""
+      },
+      {
+        "text": "라벨이 사라진다",
+        "img": ""
+      }
+    ],
+    "answer": "메모리/시간이 급증할 수 있다",
+    "distractors": [
+      "항상 더 빨라진다",
+      "결과가 0이 된다",
+      "라벨이 사라진다"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "path-007",
+    "track": "paths",
+    "type": "mcq",
+    "instruction": "다음 중 방향 있는 2~4홉 FRIEND 경로를 찾는 올바른 패턴은?",
+    "hint": "*min..max 사용, 화살표로 방향 지정",
+    "options": [
+      {
+        "text": "MATCH (a)-[:FRIEND*2..4]->(b) RETURN a,b",
+        "img": ""
+      },
+      {
+        "text": "MATCH (a)-[:FRIEND{2..4}]->(b) RETURN a,b",
+        "img": ""
+      },
+      {
+        "text": "MATCH (a)-[:FRIEND*2-4]->(b) RETURN a,b",
+        "img": ""
+      },
+      {
+        "text": "MATCH (a)-[:FRIEND]->(b) WHERE length=2..4 RETURN a,b",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (a)-[:FRIEND*2..4]->(b) RETURN a,b",
+    "distractors": [
+      "MATCH (a)-[:FRIEND{2..4}]->(b) RETURN a,b",
+      "MATCH (a)-[:FRIEND*2-4]->(b) RETURN a,b",
+      "MATCH (a)-[:FRIEND]->(b) WHERE length=2..4 RETURN a,b"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "path-008",
+    "track": "paths",
+    "type": "mcq",
+    "instruction": "무방향(방향 무시)로 경로를 찾고 싶으면 관계 패턴을 어떻게 쓰나요?",
+    "hint": "화살표 없이 -[:R]- 형태",
+    "options": [
+      {
+        "text": "-[:R]-",
+        "img": ""
+      },
+      {
+        "text": "-[:R]->",
+        "img": ""
+      },
+      {
+        "text": "<-[:R]-",
+        "img": ""
+      },
+      {
+        "text": "[:R]",
+        "img": ""
+      }
+    ],
+    "answer": "-[:R]-",
+    "distractors": [
+      "-[:R]->",
+      "<-[:R]-",
+      "[:R]"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "path-009",
+    "track": "paths",
+    "type": "mcq",
+    "instruction": "가변 길이에서 순환(cycle) 때문에 같은 노드를 반복 방문할 수 있나요?",
+    "hint": "가능하다. 범위가 크면 중복/순환 경로가 많이 나올 수 있음",
+    "options": [
+      {
+        "text": "절대 불가능",
+        "img": ""
+      },
+      {
+        "text": "가능하다",
+        "img": ""
+      },
+      {
+        "text": "항상 에러",
+        "img": ""
+      },
+      {
+        "text": "자동으로 제거된다",
+        "img": ""
+      }
+    ],
+    "answer": "가능하다",
+    "distractors": [
+      "절대 불가능",
+      "항상 에러",
+      "자동으로 제거된다"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "path-010",
+    "track": "paths",
+    "type": "mcq",
+    "instruction": "shortestPath() 사용 시 자주 하는 실수는?",
+    "hint": "shortestPath는 단일 경로만 반환하며, 패턴에 가변 길이가 필요",
+    "options": [
+      {
+        "text": "반드시 CREATE와 함께 써야 한다",
+        "img": ""
+      },
+      {
+        "text": "RETURN 없이 써야 한다",
+        "img": ""
+      },
+      {
+        "text": "패턴에 *.. 범위를 안 주는 것",
+        "img": ""
+      },
+      {
+        "text": "WHERE를 쓰는 것",
+        "img": ""
+      }
+    ],
+    "answer": "패턴에 *.. 범위를 안 주는 것",
+    "distractors": [
+      "반드시 CREATE와 함께 써야 한다",
+      "RETURN 없이 써야 한다",
+      "WHERE를 쓰는 것"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "path-011",
+    "track": "paths",
+    "type": "mcq",
+    "instruction": "경로 p에서 포함된 노드 리스트를 얻는 함수는?",
+    "hint": "nodes(p)는 path에 포함된 노드들을 리스트로",
+    "options": [
+      {
+        "text": "nodes(p)",
+        "img": ""
+      },
+      {
+        "text": "relationships(p)",
+        "img": ""
+      },
+      {
+        "text": "length(p)",
+        "img": ""
+      },
+      {
+        "text": "collect(p)",
+        "img": ""
+      }
+    ],
+    "answer": "nodes(p)",
+    "distractors": [
+      "relationships(p)",
+      "length(p)",
+      "collect(p)"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "path-012",
+    "track": "paths",
+    "type": "mcq",
+    "instruction": "경로 p에서 포함된 관계 리스트를 얻는 함수는?",
+    "hint": "relationships(p)는 관계들의 리스트",
+    "options": [
+      {
+        "text": "rels(p)",
+        "img": ""
+      },
+      {
+        "text": "relationships(p)",
+        "img": ""
+      },
+      {
+        "text": "edges(p)",
+        "img": ""
+      },
+      {
+        "text": "links(p)",
+        "img": ""
+      }
+    ],
+    "answer": "relationships(p)",
+    "distractors": [
+      "rels(p)",
+      "edges(p)",
+      "links(p)"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "path-013",
+    "track": "paths",
+    "type": "build",
+    "instruction": "Person에서 FRIEND 관계로 1~3홉 떨어진 Person을 찾고 a,b를 반환하세요.",
+    "hint": "가변 길이: [:FRIEND*1..3]",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(a:Person)",
+        "img": ""
+      },
+      {
+        "text": "-[:FRIEND*1..3]->",
+        "img": ""
+      },
+      {
+        "text": "(b:Person)",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "a",
+        "img": ""
+      },
+      {
+        "text": ",",
+        "img": ""
+      },
+      {
+        "text": "b",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (a:Person)-[:FRIEND*1..3]->(b:Person) RETURN a, b",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "path-014",
+    "track": "paths",
+    "type": "build",
+    "instruction": "Movie에서 Genre로 IN_GENRE 관계를 1홉 따라가 genre를 반환하세요.",
+    "hint": "단일 홉은 * 없이 -[:R]-> 사용",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(m:Movie)",
+        "img": ""
+      },
+      {
+        "text": "-[:IN_GENRE]->",
+        "img": ""
+      },
+      {
+        "text": "(g:Genre)",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "g",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (m:Movie)-[:IN_GENRE]->(g:Genre) RETURN g",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "path-015",
+    "track": "paths",
+    "type": "build",
+    "instruction": "a와 b 사이 최단 경로를 구해 p로 반환하세요. (KNOWS, 최대 6홉)",
+    "hint": "shortestPath + 가변길이 *..6",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "p",
+        "img": ""
+      },
+      {
+        "text": "=",
+        "img": ""
+      },
+      {
+        "text": "shortestPath(",
+        "img": ""
+      },
+      {
+        "text": "(a:Person)",
+        "img": ""
+      },
+      {
+        "text": "-[:KNOWS*..6]-",
+        "img": ""
+      },
+      {
+        "text": "(b:Person)",
+        "img": ""
+      },
+      {
+        "text": ")",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "p",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH p = shortestPath((a:Person)-[:KNOWS*..6]-(b:Person)) RETURN p",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "path-016",
+    "track": "paths",
+    "type": "build",
+    "instruction": "경로 p의 길이(홉 수)를 path_len으로 반환하세요.",
+    "hint": "length(p) 사용",
+    "options": [
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "length(p)",
+        "img": ""
+      },
+      {
+        "text": "AS",
+        "img": ""
+      },
+      {
+        "text": "path_len",
+        "img": ""
+      }
+    ],
+    "answer": "RETURN length(p) AS path_len",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "path-017",
+    "track": "paths",
+    "type": "build",
+    "instruction": "a에서 b로 가는 2홉 FRIEND 경로만 찾고 p를 반환하세요.",
+    "hint": "정확히 2홉: *2",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "p",
+        "img": ""
+      },
+      {
+        "text": "=",
+        "img": ""
+      },
+      {
+        "text": "(a:Person)",
+        "img": ""
+      },
+      {
+        "text": "-[:FRIEND*2]->",
+        "img": ""
+      },
+      {
+        "text": "(b:Person)",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "p",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH p = (a:Person)-[:FRIEND*2]->(b:Person) RETURN p",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "path-018",
+    "track": "paths",
+    "type": "build",
+    "instruction": "무방향으로 (a)-[:KNOWS]-(b) 패턴을 찾고 a,b를 반환하세요.",
+    "hint": "화살표 없이 -[:R]-",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(a:Person)",
+        "img": ""
+      },
+      {
+        "text": "-[:KNOWS]-",
+        "img": ""
+      },
+      {
+        "text": "(b:Person)",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "a",
+        "img": ""
+      },
+      {
+        "text": ",",
+        "img": ""
+      },
+      {
+        "text": "b",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (a:Person)-[:KNOWS]-(b:Person) RETURN a, b",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "path-019",
+    "track": "paths",
+    "type": "build",
+    "instruction": "경로 p에서 노드 리스트와 관계 리스트를 각각 반환하세요.",
+    "hint": "nodes(p), relationships(p)",
+    "options": [
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "nodes(p)",
+        "img": ""
+      },
+      {
+        "text": "AS",
+        "img": ""
+      },
+      {
+        "text": "ns",
+        "img": ""
+      },
+      {
+        "text": ",",
+        "img": ""
+      },
+      {
+        "text": "relationships(p)",
+        "img": ""
+      },
+      {
+        "text": "AS",
+        "img": ""
+      },
+      {
+        "text": "rs",
+        "img": ""
+      }
+    ],
+    "answer": "RETURN nodes(p) AS ns, relationships(p) AS rs",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "path-020",
+    "track": "paths",
+    "type": "build",
+    "instruction": "Movie에서 ACTED_IN으로 연결된 Person을 찾는데, 방향을 반대로 써서 패턴을 완성하세요.",
+    "hint": "들어오는 관계: (m)<-[:ACTED_IN]-(p)",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(m:Movie)",
+        "img": ""
+      },
+      {
+        "text": "<-[:ACTED_IN]-",
+        "img": ""
+      },
+      {
+        "text": "(p:Person)",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "m",
+        "img": ""
+      },
+      {
+        "text": ",",
+        "img": ""
+      },
+      {
+        "text": "p",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (m:Movie)<-[:ACTED_IN]-(p:Person) RETURN m, p",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  }
+]
