@@ -1,0 +1,814 @@
+[
+  {
+    "id": "agg-001",
+    "track": "aggregation",
+    "type": "mcq",
+    "instruction": "count(m)은 보통 무엇을 의미하나요?",
+    "hint": "count는 행(또는 매치된 값)의 개수를 센다.",
+    "options": [
+      {
+        "text": "매치된 개수(행 수)",
+        "img": ""
+      },
+      {
+        "text": "합계(sum)",
+        "img": ""
+      },
+      {
+        "text": "평균(avg)",
+        "img": ""
+      },
+      {
+        "text": "리스트(collect)",
+        "img": ""
+      }
+    ],
+    "answer": "매치된 개수(행 수)",
+    "distractors": [
+      "합계(sum)",
+      "평균(avg)",
+      "리스트(collect)"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "agg-002",
+    "track": "aggregation",
+    "type": "mcq",
+    "instruction": "장르별 영화 수를 구할 때 올바른 RETURN은? (g:Genre)<-[:IN_GENRE]-(m:Movie)",
+    "hint": "그룹 키(genre)와 집계(count)를 함께 RETURN",
+    "options": [
+      {
+        "text": "RETURN count(m)",
+        "img": ""
+      },
+      {
+        "text": "RETURN g.name, count(m)",
+        "img": ""
+      },
+      {
+        "text": "RETURN g, m",
+        "img": ""
+      },
+      {
+        "text": "RETURN sum(m)",
+        "img": ""
+      }
+    ],
+    "answer": "RETURN g.name, count(m)",
+    "distractors": [
+      "RETURN count(m)",
+      "RETURN g, m",
+      "RETURN sum(m)"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "agg-003",
+    "track": "aggregation",
+    "type": "mcq",
+    "instruction": "Cypher에서 그룹핑은 어떤 구문으로 하나요?",
+    "hint": "Cypher는 SQL의 GROUP BY 대신 WITH/RETURN에 그룹키를 둔다.",
+    "options": [
+      {
+        "text": "GROUP BY",
+        "img": ""
+      },
+      {
+        "text": "WITH",
+        "img": ""
+      },
+      {
+        "text": "ORDER BY",
+        "img": ""
+      },
+      {
+        "text": "MERGE",
+        "img": ""
+      }
+    ],
+    "answer": "WITH",
+    "distractors": [
+      "GROUP BY",
+      "ORDER BY",
+      "MERGE"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "agg-004",
+    "track": "aggregation",
+    "type": "mcq",
+    "instruction": "아래 중 평균을 구하는 함수는?",
+    "hint": "avg()는 숫자 프로퍼티의 평균",
+    "options": [
+      {
+        "text": "mean()",
+        "img": ""
+      },
+      {
+        "text": "avg()",
+        "img": ""
+      },
+      {
+        "text": "average()",
+        "img": ""
+      },
+      {
+        "text": "mid()",
+        "img": ""
+      }
+    ],
+    "answer": "avg()",
+    "distractors": [
+      "mean()",
+      "average()",
+      "mid()"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "agg-005",
+    "track": "aggregation",
+    "type": "mcq",
+    "instruction": "sum(m.rating)은 어떤 경우에 유효한가요?",
+    "hint": "sum은 숫자 타입 값에만 적용",
+    "options": [
+      {
+        "text": "rating이 숫자일 때",
+        "img": ""
+      },
+      {
+        "text": "rating이 문자열일 때",
+        "img": ""
+      },
+      {
+        "text": "m이 노드일 때",
+        "img": ""
+      },
+      {
+        "text": "관계 타입일 때",
+        "img": ""
+      }
+    ],
+    "answer": "rating이 숫자일 때",
+    "distractors": [
+      "rating이 문자열일 때",
+      "m이 노드일 때",
+      "관계 타입일 때"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "agg-006",
+    "track": "aggregation",
+    "type": "mcq",
+    "instruction": "collect(a.name)의 주요 목적은?",
+    "hint": "여러 행 값을 리스트로 모아 1행으로 만든다.",
+    "options": [
+      {
+        "text": "중복 제거",
+        "img": ""
+      },
+      {
+        "text": "리스트로 집계",
+        "img": ""
+      },
+      {
+        "text": "정렬",
+        "img": ""
+      },
+      {
+        "text": "필터링",
+        "img": ""
+      }
+    ],
+    "answer": "리스트로 집계",
+    "distractors": [
+      "중복 제거",
+      "정렬",
+      "필터링"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "agg-007",
+    "track": "aggregation",
+    "type": "mcq",
+    "instruction": "collect에서 중복을 제거하려면?",
+    "hint": "DISTINCT를 사용",
+    "options": [
+      {
+        "text": "collect(UNIQUE x)",
+        "img": ""
+      },
+      {
+        "text": "collect(DISTINCT x)",
+        "img": ""
+      },
+      {
+        "text": "unique(collect x)",
+        "img": ""
+      },
+      {
+        "text": "distinct(collect x)",
+        "img": ""
+      }
+    ],
+    "answer": "collect(DISTINCT x)",
+    "distractors": [
+      "collect(UNIQUE x)",
+      "unique(collect x)",
+      "distinct(collect x)"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "agg-008",
+    "track": "aggregation",
+    "type": "mcq",
+    "instruction": "다음 중 DISTINCT의 효과로 올바른 것은?",
+    "hint": "중복 행/값 제거",
+    "options": [
+      {
+        "text": "정렬한다",
+        "img": ""
+      },
+      {
+        "text": "중복 제거한다",
+        "img": ""
+      },
+      {
+        "text": "합계를 구한다",
+        "img": ""
+      },
+      {
+        "text": "리스트로 만든다",
+        "img": ""
+      }
+    ],
+    "answer": "중복 제거한다",
+    "distractors": [
+      "정렬한다",
+      "합계를 구한다",
+      "리스트로 만든다"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "agg-009",
+    "track": "aggregation",
+    "type": "mcq",
+    "instruction": "WITH를 쓰는 대표적인 이유는?",
+    "hint": "중간 결과를 다음 단계로 넘기며, 그룹핑/집계를 수행",
+    "options": [
+      {
+        "text": "노드 생성",
+        "img": ""
+      },
+      {
+        "text": "중간 결과 전달/집계",
+        "img": ""
+      },
+      {
+        "text": "권한 설정",
+        "img": ""
+      },
+      {
+        "text": "인덱스 생성",
+        "img": ""
+      }
+    ],
+    "answer": "중간 결과 전달/집계",
+    "distractors": [
+      "노드 생성",
+      "권한 설정",
+      "인덱스 생성"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "agg-010",
+    "track": "aggregation",
+    "type": "mcq",
+    "instruction": "다음 중 장르별 평균 평점 구하기에 가장 적절한 형태는?",
+    "hint": "g.name으로 그룹키를 두고 avg(m.rating) 집계",
+    "options": [
+      {
+        "text": "RETURN avg(m.rating)",
+        "img": ""
+      },
+      {
+        "text": "RETURN g.name, avg(m.rating)",
+        "img": ""
+      },
+      {
+        "text": "RETURN g, m.rating",
+        "img": ""
+      },
+      {
+        "text": "RETURN g.name, m.rating",
+        "img": ""
+      }
+    ],
+    "answer": "RETURN g.name, avg(m.rating)",
+    "distractors": [
+      "RETURN avg(m.rating)",
+      "RETURN g, m.rating",
+      "RETURN g.name, m.rating"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "agg-011",
+    "track": "aggregation",
+    "type": "mcq",
+    "instruction": "count(*)와 비슷하게 전체 행 수를 세는 표현은?",
+    "hint": "Cypher에서는 count(*) 또는 count(변수) 사용",
+    "options": [
+      {
+        "text": "count(*)",
+        "img": ""
+      },
+      {
+        "text": "rows()",
+        "img": ""
+      },
+      {
+        "text": "len(*)",
+        "img": ""
+      },
+      {
+        "text": "countAll()",
+        "img": ""
+      }
+    ],
+    "answer": "count(*)",
+    "distractors": [
+      "rows()",
+      "len(*)",
+      "countAll()"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "agg-012",
+    "track": "aggregation",
+    "type": "mcq",
+    "instruction": "다음 중 '그룹키 없이 집계만 RETURN' 하면 어떤 결과가 나오나요?",
+    "hint": "전체 결과를 1행으로 집계",
+    "options": [
+      {
+        "text": "에러가 난다",
+        "img": ""
+      },
+      {
+        "text": "각 노드별로 1행",
+        "img": ""
+      },
+      {
+        "text": "전체 1행 집계",
+        "img": ""
+      },
+      {
+        "text": "자동으로 정렬",
+        "img": ""
+      }
+    ],
+    "answer": "전체 1행 집계",
+    "distractors": [
+      "에러가 난다",
+      "각 노드별로 1행",
+      "자동으로 정렬"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "agg-013",
+    "track": "aggregation",
+    "type": "build",
+    "instruction": "모든 Movie 개수를 반환하는 쿼리를 완성하세요.",
+    "hint": "count(m)로 개수를 세고 RETURN으로 출력",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(m:Movie)",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "count(m)",
+        "img": ""
+      },
+      {
+        "text": "m",
+        "img": ""
+      },
+      {
+        "text": "WHERE",
+        "img": ""
+      },
+      {
+        "text": "WITH",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (m:Movie) RETURN count(m)",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "agg-014",
+    "track": "aggregation",
+    "type": "build",
+    "instruction": "장르(Genre)별 Movie 개수를 구하세요. (genre, movies)로 반환",
+    "hint": "그룹키 g.name과 count(m)을 함께 RETURN",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(g:Genre)",
+        "img": ""
+      },
+      {
+        "text": "<-[:IN_GENRE]-",
+        "img": ""
+      },
+      {
+        "text": "(m:Movie)",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "g.name",
+        "img": ""
+      },
+      {
+        "text": "AS",
+        "img": ""
+      },
+      {
+        "text": "genre",
+        "img": ""
+      },
+      {
+        "text": ",",
+        "img": ""
+      },
+      {
+        "text": "count(m)",
+        "img": ""
+      },
+      {
+        "text": "AS",
+        "img": ""
+      },
+      {
+        "text": "movies",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (g:Genre)<-[:IN_GENRE]-(m:Movie) RETURN g.name AS genre, count(m) AS movies",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "agg-015",
+    "track": "aggregation",
+    "type": "build",
+    "instruction": "Movie의 평균 rating을 avg_rating이라는 이름으로 반환하세요.",
+    "hint": "avg(m.rating) 사용 + AS 별칭",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(m:Movie)",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "avg(m.rating)",
+        "img": ""
+      },
+      {
+        "text": "AS",
+        "img": ""
+      },
+      {
+        "text": "avg_rating",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (m:Movie) RETURN avg(m.rating) AS avg_rating",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "agg-016",
+    "track": "aggregation",
+    "type": "build",
+    "instruction": "장르별 평균 rating을 구하세요. (genre, avg_rating)",
+    "hint": "g.name 그룹키 + avg(m.rating)",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(g:Genre)",
+        "img": ""
+      },
+      {
+        "text": "<-[:IN_GENRE]-",
+        "img": ""
+      },
+      {
+        "text": "(m:Movie)",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "g.name",
+        "img": ""
+      },
+      {
+        "text": "AS",
+        "img": ""
+      },
+      {
+        "text": "genre",
+        "img": ""
+      },
+      {
+        "text": ",",
+        "img": ""
+      },
+      {
+        "text": "avg(m.rating)",
+        "img": ""
+      },
+      {
+        "text": "AS",
+        "img": ""
+      },
+      {
+        "text": "avg_rating",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (g:Genre)<-[:IN_GENRE]-(m:Movie) RETURN g.name AS genre, avg(m.rating) AS avg_rating",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "agg-017",
+    "track": "aggregation",
+    "type": "build",
+    "instruction": "배우(Person) 이름을 중복 없이 수집해서 actor_names로 반환하세요.",
+    "hint": "collect(DISTINCT p.name)",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(p:Person)",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "collect(DISTINCT p.name)",
+        "img": ""
+      },
+      {
+        "text": "AS",
+        "img": ""
+      },
+      {
+        "text": "actor_names",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (p:Person) RETURN collect(DISTINCT p.name) AS actor_names",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "agg-018",
+    "track": "aggregation",
+    "type": "build",
+    "instruction": "Movie별로 출연 배우 이름 리스트를 수집하세요. (movie, actors)",
+    "hint": "m.title 그룹키 + collect(a.name)",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(a:Person)",
+        "img": ""
+      },
+      {
+        "text": "-[:ACTED_IN]->",
+        "img": ""
+      },
+      {
+        "text": "(m:Movie)",
+        "img": ""
+      },
+      {
+        "text": "WITH",
+        "img": ""
+      },
+      {
+        "text": "m",
+        "img": ""
+      },
+      {
+        "text": ",",
+        "img": ""
+      },
+      {
+        "text": "collect(a.name)",
+        "img": ""
+      },
+      {
+        "text": "AS",
+        "img": ""
+      },
+      {
+        "text": "actors",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "m.title",
+        "img": ""
+      },
+      {
+        "text": "AS",
+        "img": ""
+      },
+      {
+        "text": "movie",
+        "img": ""
+      },
+      {
+        "text": ",",
+        "img": ""
+      },
+      {
+        "text": "actors",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (a:Person)-[:ACTED_IN]->(m:Movie) WITH m, collect(a.name) AS actors RETURN m.title AS movie, actors",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "agg-019",
+    "track": "aggregation",
+    "type": "build",
+    "instruction": "Movie별로 '중복 없는' 장르 리스트를 수집하세요. (movie, genres)",
+    "hint": "collect(DISTINCT g.name)",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(m:Movie)",
+        "img": ""
+      },
+      {
+        "text": "-[:IN_GENRE]->",
+        "img": ""
+      },
+      {
+        "text": "(g:Genre)",
+        "img": ""
+      },
+      {
+        "text": "WITH",
+        "img": ""
+      },
+      {
+        "text": "m",
+        "img": ""
+      },
+      {
+        "text": ",",
+        "img": ""
+      },
+      {
+        "text": "collect(DISTINCT g.name)",
+        "img": ""
+      },
+      {
+        "text": "AS",
+        "img": ""
+      },
+      {
+        "text": "genres",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "m.title",
+        "img": ""
+      },
+      {
+        "text": "AS",
+        "img": ""
+      },
+      {
+        "text": "movie",
+        "img": ""
+      },
+      {
+        "text": ",",
+        "img": ""
+      },
+      {
+        "text": "genres",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (m:Movie)-[:IN_GENRE]->(g:Genre) WITH m, collect(DISTINCT g.name) AS genres RETURN m.title AS movie, genres",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "agg-020",
+    "track": "aggregation",
+    "type": "build",
+    "instruction": "rating이 8 이상인 Movie의 개수를 반환하세요.",
+    "hint": "WHERE로 필터 후 count(m)",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(m:Movie)",
+        "img": ""
+      },
+      {
+        "text": "WHERE",
+        "img": ""
+      },
+      {
+        "text": "m.rating",
+        "img": ""
+      },
+      {
+        "text": ">=",
+        "img": ""
+      },
+      {
+        "text": "8",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "count(m)",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (m:Movie) WHERE m.rating >= 8 RETURN count(m)",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  }
+]

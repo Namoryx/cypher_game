@@ -1,0 +1,682 @@
+[
+  {
+    "id": "core-001",
+    "track": "core",
+    "type": "mcq",
+    "instruction": "다음 중 Graph Node(노드)를 나타내는 것은?",
+    "hint": "노드는 엔티티입니다.",
+    "options": [
+      {
+        "text": "Relationship",
+        "img": ""
+      },
+      {
+        "text": "Node",
+        "img": ""
+      },
+      {
+        "text": "Table",
+        "img": ""
+      },
+      {
+        "text": "Property",
+        "img": ""
+      }
+    ],
+    "answer": "Node",
+    "distractors": [
+      "Relationship",
+      "Table",
+      "Property"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "core-002",
+    "track": "core",
+    "type": "mcq",
+    "instruction": "다음 중 Relationship(관계)를 나타내는 것은?",
+    "hint": "관계는 노드와 노드를 잇는 연결(화살표)",
+    "options": [
+      {
+        "text": "Node",
+        "img": ""
+      },
+      {
+        "text": "Relationship",
+        "img": ""
+      },
+      {
+        "text": "Column",
+        "img": ""
+      },
+      {
+        "text": "Index",
+        "img": ""
+      }
+    ],
+    "answer": "Relationship",
+    "distractors": [
+      "Node",
+      "Column",
+      "Index"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "core-003",
+    "track": "core",
+    "type": "mcq",
+    "instruction": "Cypher에서 :Person 같은 표기는 무엇을 뜻하나요?",
+    "hint": "라벨은 노드의 분류(타입)",
+    "options": [
+      {
+        "text": "Property",
+        "img": ""
+      },
+      {
+        "text": "Label",
+        "img": ""
+      },
+      {
+        "text": "Relationship Type",
+        "img": ""
+      },
+      {
+        "text": "Database Name",
+        "img": ""
+      }
+    ],
+    "answer": "Label",
+    "distractors": [
+      "Property",
+      "Relationship Type",
+      "Database Name"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "core-004",
+    "track": "core",
+    "type": "mcq",
+    "instruction": "name:'Alice'는 그래프에서 무엇인가요?",
+    "hint": "프로퍼티는 key:value 형태",
+    "options": [
+      {
+        "text": "Label",
+        "img": ""
+      },
+      {
+        "text": "Property",
+        "img": ""
+      },
+      {
+        "text": "Relationship",
+        "img": ""
+      },
+      {
+        "text": "Path",
+        "img": ""
+      }
+    ],
+    "answer": "Property",
+    "distractors": [
+      "Label",
+      "Relationship",
+      "Path"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "core-005",
+    "track": "core",
+    "type": "mcq",
+    "instruction": "MATCH 구문의 역할로 가장 알맞은 것은?",
+    "hint": "MATCH=패턴 검색/바인딩",
+    "options": [
+      {
+        "text": "데이터 생성",
+        "img": ""
+      },
+      {
+        "text": "데이터 삭제",
+        "img": ""
+      },
+      {
+        "text": "패턴 매칭(검색)",
+        "img": ""
+      },
+      {
+        "text": "권한 설정",
+        "img": ""
+      }
+    ],
+    "answer": "패턴 매칭(검색)",
+    "distractors": [
+      "데이터 생성",
+      "데이터 삭제",
+      "권한 설정"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "core-006",
+    "track": "core",
+    "type": "mcq",
+    "instruction": "CREATE 구문의 역할은?",
+    "hint": "CREATE=새로 생성(중복 확인 안 함)",
+    "options": [
+      {
+        "text": "조회",
+        "img": ""
+      },
+      {
+        "text": "생성",
+        "img": ""
+      },
+      {
+        "text": "정렬",
+        "img": ""
+      },
+      {
+        "text": "집계",
+        "img": ""
+      }
+    ],
+    "answer": "생성",
+    "distractors": [
+      "조회",
+      "정렬",
+      "집계"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "core-007",
+    "track": "core",
+    "type": "mcq",
+    "instruction": "WHERE는 주로 무엇을 위해 쓰나요?",
+    "hint": "WHERE=조건 필터링",
+    "options": [
+      {
+        "text": "결과 반환",
+        "img": ""
+      },
+      {
+        "text": "조건 필터링",
+        "img": ""
+      },
+      {
+        "text": "노드 생성",
+        "img": ""
+      },
+      {
+        "text": "관계 삭제",
+        "img": ""
+      }
+    ],
+    "answer": "조건 필터링",
+    "distractors": [
+      "결과 반환",
+      "노드 생성",
+      "관계 삭제"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "core-008",
+    "track": "core",
+    "type": "mcq",
+    "instruction": "RETURN은 무엇을 하나요?",
+    "hint": "RETURN=결과로 내보낼 값 지정",
+    "options": [
+      {
+        "text": "결과 출력",
+        "img": ""
+      },
+      {
+        "text": "결과 삭제",
+        "img": ""
+      },
+      {
+        "text": "관계 생성",
+        "img": ""
+      },
+      {
+        "text": "인덱스 생성",
+        "img": ""
+      }
+    ],
+    "answer": "결과 출력",
+    "distractors": [
+      "결과 삭제",
+      "관계 생성",
+      "인덱스 생성"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "core-009",
+    "track": "core",
+    "type": "mcq",
+    "instruction": "아래 중 노드 1개를 나타내는 올바른 패턴은?",
+    "hint": "노드 패턴은 ( )",
+    "options": [
+      {
+        "text": "-[r]->",
+        "img": ""
+      },
+      {
+        "text": "(n)",
+        "img": ""
+      },
+      {
+        "text": ":Person",
+        "img": ""
+      },
+      {
+        "text": "{name:'A'}",
+        "img": ""
+      }
+    ],
+    "answer": "(n)",
+    "distractors": [
+      "-[r]->",
+      ":Person",
+      "{name:'A'}"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "core-010",
+    "track": "core",
+    "type": "mcq",
+    "instruction": "아래 중 관계 1개를 나타내는 올바른 패턴은?",
+    "hint": "관계 패턴은 -[ ]-> (방향 포함)",
+    "options": [
+      {
+        "text": "(n)",
+        "img": ""
+      },
+      {
+        "text": "-[r]->",
+        "img": ""
+      },
+      {
+        "text": "{age:10}",
+        "img": ""
+      },
+      {
+        "text": "RETURN n",
+        "img": ""
+      }
+    ],
+    "answer": "-[r]->",
+    "distractors": [
+      "(n)",
+      "{age:10}",
+      "RETURN n"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "core-011",
+    "track": "core",
+    "type": "mcq",
+    "instruction": "Person 라벨을 가진 모든 노드를 찾는 MATCH 패턴으로 올바른 것은?",
+    "hint": "라벨 지정은 (n:Person)",
+    "options": [
+      {
+        "text": "MATCH Person RETURN Person",
+        "img": ""
+      },
+      {
+        "text": "MATCH (n:Person) RETURN n",
+        "img": ""
+      },
+      {
+        "text": "MATCH [:Person] RETURN n",
+        "img": ""
+      },
+      {
+        "text": "MATCH {Person} RETURN n",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (n:Person) RETURN n",
+    "distractors": [
+      "MATCH Person RETURN Person",
+      "MATCH [:Person] RETURN n",
+      "MATCH {Person} RETURN n"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "core-012",
+    "track": "core",
+    "type": "mcq",
+    "instruction": "이름이 'Tom'인 Person 노드를 찾는 올바른 패턴은?",
+    "hint": "프로퍼티 맵은 {name:'Tom'}",
+    "options": [
+      {
+        "text": "MATCH (n:Person {name:'Tom'}) RETURN n",
+        "img": ""
+      },
+      {
+        "text": "MATCH (n {Person:'Tom'}) RETURN n",
+        "img": ""
+      },
+      {
+        "text": "MATCH (:Person)-[:name]->('Tom')",
+        "img": ""
+      },
+      {
+        "text": "RETURN (Person Tom)",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (n:Person {name:'Tom'}) RETURN n",
+    "distractors": [
+      "MATCH (n {Person:'Tom'}) RETURN n",
+      "MATCH (:Person)-[:name]->('Tom')",
+      "RETURN (Person Tom)"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "core-013",
+    "track": "core",
+    "type": "build",
+    "instruction": "'Person' 라벨을 가진 모든 노드를 찾는 쿼리를 완성하세요.",
+    "hint": "MATCH로 찾고 RETURN으로 출력",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(n:Person)",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "n",
+        "img": ""
+      },
+      {
+        "text": "WHERE",
+        "img": ""
+      },
+      {
+        "text": "CREATE",
+        "img": ""
+      },
+      {
+        "text": "DELETE",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (n:Person) RETURN n",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "core-014",
+    "track": "core",
+    "type": "build",
+    "instruction": "'Movie' 라벨을 가진 모든 노드를 반환하세요.",
+    "hint": "MATCH (m:Movie) RETURN m 형태",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(m:Movie)",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "m",
+        "img": ""
+      },
+      {
+        "text": "WHERE",
+        "img": ""
+      },
+      {
+        "text": "CREATE",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (m:Movie) RETURN m",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "core-015",
+    "track": "core",
+    "type": "build",
+    "instruction": "name이 'Alice'인 Person을 찾아 반환하세요. (WHERE 사용)",
+    "hint": "WHERE로 조건 필터링 후 RETURN",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(n:Person)",
+        "img": ""
+      },
+      {
+        "text": "WHERE",
+        "img": ""
+      },
+      {
+        "text": "n.name",
+        "img": ""
+      },
+      {
+        "text": "=",
+        "img": ""
+      },
+      {
+        "text": "'Alice'",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "n",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (n:Person) WHERE n.name = 'Alice' RETURN n",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "core-016",
+    "track": "core",
+    "type": "build",
+    "instruction": "title이 'Apollo 13'인 Movie를 찾아 반환하세요. (프로퍼티 맵 사용)",
+    "hint": "프로퍼티 맵 {title:'...'} 사용",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(m:Movie {title:'Apollo 13'})",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "m",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (m:Movie {title:'Apollo 13'}) RETURN m",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "core-017",
+    "track": "core",
+    "type": "build",
+    "instruction": "Person이 Movie에 ACTED_IN 관계로 연결된 패턴을 찾고 person과 movie를 반환하세요.",
+    "hint": "(p)-[:ACTED_IN]->(m) 패턴",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(p:Person)",
+        "img": ""
+      },
+      {
+        "text": "-[:ACTED_IN]->",
+        "img": ""
+      },
+      {
+        "text": "(m:Movie)",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "p",
+        "img": ""
+      },
+      {
+        "text": "m",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (p:Person)-[:ACTED_IN]->(m:Movie) RETURN p, m",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "core-018",
+    "track": "core",
+    "type": "build",
+    "instruction": "Movie에서 Person으로 들어오는 ACTED_IN 관계 패턴을 찾고 movie만 반환하세요.",
+    "hint": "방향 반대: (m)<-[:ACTED_IN]-(p)",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(m:Movie)",
+        "img": ""
+      },
+      {
+        "text": "<-[:ACTED_IN]-",
+        "img": ""
+      },
+      {
+        "text": "(p:Person)",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "m",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (m:Movie)<-[:ACTED_IN]-(p:Person) RETURN m",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "core-019",
+    "track": "core",
+    "type": "build",
+    "instruction": "name이 'Tom Hanks'인 Person만 반환하세요.",
+    "hint": "라벨+프로퍼티 맵으로 한 번에 매칭",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(p:Person {name:'Tom Hanks'})",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "p",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (p:Person {name:'Tom Hanks'}) RETURN p",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "core-020",
+    "track": "core",
+    "type": "build",
+    "instruction": "rating이 8 이상인 Movie를 찾아 반환하세요.",
+    "hint": "숫자 비교: m.rating >= 8",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(m:Movie)",
+        "img": ""
+      },
+      {
+        "text": "WHERE",
+        "img": ""
+      },
+      {
+        "text": "m.rating",
+        "img": ""
+      },
+      {
+        "text": ">=",
+        "img": ""
+      },
+      {
+        "text": "8",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "m",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (m:Movie) WHERE m.rating >= 8 RETURN m",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  }
+]
