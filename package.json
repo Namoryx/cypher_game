@@ -1,0 +1,14 @@
+{
+  "name": "cypher_game",
+  "version": "1.0.0",
+  "description": "Experimental projects and modules for Graph DB (ex. Neo4j)",
+  "main": "index.js",
+  "scripts": {
+    "build:quizzes": "node scripts/build_quizzes.mjs",
+    "build": "npm run build:quizzes"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

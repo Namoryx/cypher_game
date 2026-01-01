@@ -1,0 +1,814 @@
+[
+  {
+    "id": "model-001",
+    "track": "modeling",
+    "type": "mcq",
+    "instruction": "라벨(Label)을 사용하는 가장 좋은 이유는?",
+    "hint": "라벨은 타입/분류로 검색과 모델링을 단순화한다.",
+    "options": [
+      {
+        "text": "노드를 장식하려고",
+        "img": ""
+      },
+      {
+        "text": "노드 타입을 분류하고 검색을 빠르게 하려고",
+        "img": ""
+      },
+      {
+        "text": "관계 방향을 바꾸려고",
+        "img": ""
+      },
+      {
+        "text": "쿼리 문법을 생략하려고",
+        "img": ""
+      }
+    ],
+    "answer": "노드 타입을 분류하고 검색을 빠르게 하려고",
+    "distractors": [
+      "노드를 장식하려고",
+      "관계 방향을 바꾸려고",
+      "쿼리 문법을 생략하려고"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "model-002",
+    "track": "modeling",
+    "type": "mcq",
+    "instruction": "하나의 노드에 여러 라벨을 붙이는 것이 유용한 경우는?",
+    "hint": "다중 역할(예: :Person:Employee) 같은 교집합 모델링",
+    "options": [
+      {
+        "text": "절대 쓰면 안 된다",
+        "img": ""
+      },
+      {
+        "text": "노드가 여러 역할/분류를 동시에 가질 때",
+        "img": ""
+      },
+      {
+        "text": "인덱스를 삭제할 때",
+        "img": ""
+      },
+      {
+        "text": "관계를 만들기 싫을 때",
+        "img": ""
+      }
+    ],
+    "answer": "노드가 여러 역할/분류를 동시에 가질 때",
+    "distractors": [
+      "절대 쓰면 안 된다",
+      "인덱스를 삭제할 때",
+      "관계를 만들기 싫을 때"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "model-003",
+    "track": "modeling",
+    "type": "mcq",
+    "instruction": "관계 방향을 설계할 때 가장 좋은 원칙은?",
+    "hint": "의미가 자연스러운 한 방향으로 일관되게",
+    "options": [
+      {
+        "text": "아무 방향이나 랜덤",
+        "img": ""
+      },
+      {
+        "text": "의미가 자연스러운 방향으로 일관성 유지",
+        "img": ""
+      },
+      {
+        "text": "항상 무방향이 정답",
+        "img": ""
+      },
+      {
+        "text": "방향은 성능에만 영향",
+        "img": ""
+      }
+    ],
+    "answer": "의미가 자연스러운 방향으로 일관성 유지",
+    "distractors": [
+      "아무 방향이나 랜덤",
+      "항상 무방향이 정답",
+      "방향은 성능에만 영향"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "model-004",
+    "track": "modeling",
+    "type": "mcq",
+    "instruction": "다대다(M:N) 관계를 표현할 때 가장 권장되는 방식은?",
+    "hint": "노드 간 관계(relationship)로 표현하는 것이 쿼리/확장에 유리",
+    "options": [
+      {
+        "text": "한쪽 노드에 배열 프로퍼티로 IDs 저장",
+        "img": ""
+      },
+      {
+        "text": "관계로 연결",
+        "img": ""
+      },
+      {
+        "text": "두 노드를 합쳐 하나로 만들기",
+        "img": ""
+      },
+      {
+        "text": "텍스트로 CSV 저장",
+        "img": ""
+      }
+    ],
+    "answer": "관계로 연결",
+    "distractors": [
+      "한쪽 노드에 배열 프로퍼티로 IDs 저장",
+      "두 노드를 합쳐 하나로 만들기",
+      "텍스트로 CSV 저장"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "model-005",
+    "track": "modeling",
+    "type": "mcq",
+    "instruction": "중복 노드를 방지하려면 보통 어떤 구문/기능을 쓰나요?",
+    "hint": "MERGE 또는 UNIQUE CONSTRAINT로 방지",
+    "options": [
+      {
+        "text": "CREATE만 쓰면 된다",
+        "img": ""
+      },
+      {
+        "text": "MERGE와 유니크 제약조건",
+        "img": ""
+      },
+      {
+        "text": "RETURN으로 막는다",
+        "img": ""
+      },
+      {
+        "text": "ORDER BY로 막는다",
+        "img": ""
+      }
+    ],
+    "answer": "MERGE와 유니크 제약조건",
+    "distractors": [
+      "CREATE만 쓰면 된다",
+      "RETURN으로 막는다",
+      "ORDER BY로 막는다"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "model-006",
+    "track": "modeling",
+    "type": "mcq",
+    "instruction": "CREATE vs MERGE 중, '있으면 재사용, 없으면 생성'은?",
+    "hint": "MERGE는 upsert 성격",
+    "options": [
+      {
+        "text": "CREATE",
+        "img": ""
+      },
+      {
+        "text": "MERGE",
+        "img": ""
+      },
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "WITH",
+        "img": ""
+      }
+    ],
+    "answer": "MERGE",
+    "distractors": [
+      "CREATE",
+      "MATCH",
+      "WITH"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "model-007",
+    "track": "modeling",
+    "type": "mcq",
+    "instruction": "유니크 제약조건(UNIQUE CONSTRAINT)의 목적은?",
+    "hint": "특정 라벨+프로퍼티 조합의 중복 값 방지",
+    "options": [
+      {
+        "text": "정렬을 빠르게",
+        "img": ""
+      },
+      {
+        "text": "중복 값 방지",
+        "img": ""
+      },
+      {
+        "text": "관계 방향 제거",
+        "img": ""
+      },
+      {
+        "text": "노드 삭제",
+        "img": ""
+      }
+    ],
+    "answer": "중복 값 방지",
+    "distractors": [
+      "정렬을 빠르게",
+      "관계 방향 제거",
+      "노드 삭제"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "model-008",
+    "track": "modeling",
+    "type": "mcq",
+    "instruction": "인덱스(Index)의 주된 목적은?",
+    "hint": "검색/필터 성능 향상",
+    "options": [
+      {
+        "text": "그래프를 더 예쁘게",
+        "img": ""
+      },
+      {
+        "text": "데이터를 압축",
+        "img": ""
+      },
+      {
+        "text": "검색/필터 성능 향상",
+        "img": ""
+      },
+      {
+        "text": "관계 생성",
+        "img": ""
+      }
+    ],
+    "answer": "검색/필터 성능 향상",
+    "distractors": [
+      "그래프를 더 예쁘게",
+      "데이터를 압축",
+      "관계 생성"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "model-009",
+    "track": "modeling",
+    "type": "mcq",
+    "instruction": "다음 중 '제약조건'에 해당하는 것은?",
+    "hint": "제약조건은 데이터 무결성 규칙",
+    "options": [
+      {
+        "text": "FULLTEXT INDEX",
+        "img": ""
+      },
+      {
+        "text": "UNIQUE CONSTRAINT",
+        "img": ""
+      },
+      {
+        "text": "ORDER BY",
+        "img": ""
+      },
+      {
+        "text": "OPTIONAL MATCH",
+        "img": ""
+      }
+    ],
+    "answer": "UNIQUE CONSTRAINT",
+    "distractors": [
+      "FULLTEXT INDEX",
+      "ORDER BY",
+      "OPTIONAL MATCH"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "model-010",
+    "track": "modeling",
+    "type": "mcq",
+    "instruction": "라벨링 전략에서 가장 흔한 실수는?",
+    "hint": "너무 세밀한 라벨 남발 또는 의미 중복 라벨",
+    "options": [
+      {
+        "text": "라벨을 전혀 안 쓰는 것",
+        "img": ""
+      },
+      {
+        "text": "라벨을 너무 많이/중복되게 만드는 것",
+        "img": ""
+      },
+      {
+        "text": "RETURN을 쓰는 것",
+        "img": ""
+      },
+      {
+        "text": "WITH를 쓰는 것",
+        "img": ""
+      }
+    ],
+    "answer": "라벨을 너무 많이/중복되게 만드는 것",
+    "distractors": [
+      "라벨을 전혀 안 쓰는 것",
+      "RETURN을 쓰는 것",
+      "WITH를 쓰는 것"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "model-011",
+    "track": "modeling",
+    "type": "mcq",
+    "instruction": "노드 키(식별자)를 설계할 때 가장 권장되는 것은?",
+    "hint": "자연키 또는 대체키 중 무엇이든 '안정적/유니크'해야 함",
+    "options": [
+      {
+        "text": "시간에 따라 바뀌는 값을 키로",
+        "img": ""
+      },
+      {
+        "text": "중복 가능한 값을 키로",
+        "img": ""
+      },
+      {
+        "text": "안정적이고 유니크한 값을 키로",
+        "img": ""
+      },
+      {
+        "text": "긴 설명문을 키로",
+        "img": ""
+      }
+    ],
+    "answer": "안정적이고 유니크한 값을 키로",
+    "distractors": [
+      "시간에 따라 바뀌는 값을 키로",
+      "중복 가능한 값을 키로",
+      "긴 설명문을 키로"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "model-012",
+    "track": "modeling",
+    "type": "mcq",
+    "instruction": "관계 자체에 프로퍼티를 두는 것이 좋은 예시는?",
+    "hint": "관계의 속성(예: since, weight)은 관계 프로퍼티로",
+    "options": [
+      {
+        "text": "사람 이름",
+        "img": ""
+      },
+      {
+        "text": "영화 제목",
+        "img": ""
+      },
+      {
+        "text": "관계가 시작된 날짜(since)",
+        "img": ""
+      },
+      {
+        "text": "노드 라벨",
+        "img": ""
+      }
+    ],
+    "answer": "관계가 시작된 날짜(since)",
+    "distractors": [
+      "사람 이름",
+      "영화 제목",
+      "노드 라벨"
+    ],
+    "codeContext": ""
+  },
+  {
+    "id": "model-013",
+    "track": "modeling",
+    "type": "build",
+    "instruction": "Person(name) 중복을 막는 유니크 제약조건을 생성하세요.",
+    "hint": "p.name이 유니크하도록 REQUIRE ... IS UNIQUE",
+    "options": [
+      {
+        "text": "CREATE",
+        "img": ""
+      },
+      {
+        "text": "CONSTRAINT",
+        "img": ""
+      },
+      {
+        "text": "person_name_unique",
+        "img": ""
+      },
+      {
+        "text": "IF",
+        "img": ""
+      },
+      {
+        "text": "NOT",
+        "img": ""
+      },
+      {
+        "text": "EXISTS",
+        "img": ""
+      },
+      {
+        "text": "FOR",
+        "img": ""
+      },
+      {
+        "text": "(p:Person)",
+        "img": ""
+      },
+      {
+        "text": "REQUIRE",
+        "img": ""
+      },
+      {
+        "text": "p.name",
+        "img": ""
+      },
+      {
+        "text": "IS",
+        "img": ""
+      },
+      {
+        "text": "UNIQUE",
+        "img": ""
+      }
+    ],
+    "answer": "CREATE CONSTRAINT person_name_unique IF NOT EXISTS FOR (p:Person) REQUIRE p.name IS UNIQUE",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "model-014",
+    "track": "modeling",
+    "type": "build",
+    "instruction": "Movie(title) 중복을 막는 유니크 제약조건을 생성하세요.",
+    "hint": "m.title이 유니크하도록",
+    "options": [
+      {
+        "text": "CREATE",
+        "img": ""
+      },
+      {
+        "text": "CONSTRAINT",
+        "img": ""
+      },
+      {
+        "text": "movie_title_unique",
+        "img": ""
+      },
+      {
+        "text": "IF",
+        "img": ""
+      },
+      {
+        "text": "NOT",
+        "img": ""
+      },
+      {
+        "text": "EXISTS",
+        "img": ""
+      },
+      {
+        "text": "FOR",
+        "img": ""
+      },
+      {
+        "text": "(m:Movie)",
+        "img": ""
+      },
+      {
+        "text": "REQUIRE",
+        "img": ""
+      },
+      {
+        "text": "m.title",
+        "img": ""
+      },
+      {
+        "text": "IS",
+        "img": ""
+      },
+      {
+        "text": "UNIQUE",
+        "img": ""
+      }
+    ],
+    "answer": "CREATE CONSTRAINT movie_title_unique IF NOT EXISTS FOR (m:Movie) REQUIRE m.title IS UNIQUE",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "model-015",
+    "track": "modeling",
+    "type": "build",
+    "instruction": "Person(name:'Tom') 노드를 '있으면 재사용, 없으면 생성' 하세요.",
+    "hint": "MERGE 사용",
+    "options": [
+      {
+        "text": "MERGE",
+        "img": ""
+      },
+      {
+        "text": "(p:Person",
+        "img": ""
+      },
+      {
+        "text": "{name:'Tom'} )",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "p",
+        "img": ""
+      },
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "CREATE",
+        "img": ""
+      }
+    ],
+    "answer": "MERGE (p:Person {name:'Tom'}) RETURN p",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "model-016",
+    "track": "modeling",
+    "type": "build",
+    "instruction": "User가 Movie를 좋아요하는 다대다 모델을 관계로 표현하세요. (u)-[:LIKES]->(m)",
+    "hint": "관계로 표현",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(u:User)",
+        "img": ""
+      },
+      {
+        "text": ",",
+        "img": ""
+      },
+      {
+        "text": "(m:Movie)",
+        "img": ""
+      },
+      {
+        "text": "CREATE",
+        "img": ""
+      },
+      {
+        "text": "(u)",
+        "img": ""
+      },
+      {
+        "text": "-[:LIKES]->",
+        "img": ""
+      },
+      {
+        "text": "(m)",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "u",
+        "img": ""
+      },
+      {
+        "text": ",",
+        "img": ""
+      },
+      {
+        "text": "m",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (u:User), (m:Movie) CREATE (u)-[:LIKES]->(m) RETURN u, m",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "model-017",
+    "track": "modeling",
+    "type": "build",
+    "instruction": "Person(name:'Alice')와 Person(name:'Bob')가 알게 된 연도를 관계 프로퍼티로 저장하세요. (KNOWS {since:2025})",
+    "hint": "관계 프로퍼티 {since:2025}",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(a:Person",
+        "img": ""
+      },
+      {
+        "text": "{name:'Alice'} )",
+        "img": ""
+      },
+      {
+        "text": ",",
+        "img": ""
+      },
+      {
+        "text": "(b:Person",
+        "img": ""
+      },
+      {
+        "text": "{name:'Bob'} )",
+        "img": ""
+      },
+      {
+        "text": "CREATE",
+        "img": ""
+      },
+      {
+        "text": "(a)",
+        "img": ""
+      },
+      {
+        "text": "-[:KNOWS",
+        "img": ""
+      },
+      {
+        "text": "{since:2025}]->",
+        "img": ""
+      },
+      {
+        "text": "(b)",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "a",
+        "img": ""
+      },
+      {
+        "text": ",",
+        "img": ""
+      },
+      {
+        "text": "b",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (a:Person {name:'Alice'}), (b:Person {name:'Bob'}) CREATE (a)-[:KNOWS {since:2025}]->(b) RETURN a, b",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "model-018",
+    "track": "modeling",
+    "type": "build",
+    "instruction": "Person(name) 조회 성능을 위해 인덱스를 생성하세요.",
+    "hint": "CREATE INDEX ... FOR (p:Person) ON (p.name)",
+    "options": [
+      {
+        "text": "CREATE",
+        "img": ""
+      },
+      {
+        "text": "INDEX",
+        "img": ""
+      },
+      {
+        "text": "person_name_index",
+        "img": ""
+      },
+      {
+        "text": "IF",
+        "img": ""
+      },
+      {
+        "text": "NOT",
+        "img": ""
+      },
+      {
+        "text": "EXISTS",
+        "img": ""
+      },
+      {
+        "text": "FOR",
+        "img": ""
+      },
+      {
+        "text": "(p:Person)",
+        "img": ""
+      },
+      {
+        "text": "ON",
+        "img": ""
+      },
+      {
+        "text": "(p.name)",
+        "img": ""
+      }
+    ],
+    "answer": "CREATE INDEX person_name_index IF NOT EXISTS FOR (p:Person) ON (p.name)",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "model-019",
+    "track": "modeling",
+    "type": "build",
+    "instruction": "관계 방향이 헷갈리면, 방향을 무시하고 KNOWS 연결을 찾는 패턴을 쓰세요.",
+    "hint": "무방향: -[:KNOWS]-",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(a:Person)",
+        "img": ""
+      },
+      {
+        "text": "-[:KNOWS]-",
+        "img": ""
+      },
+      {
+        "text": "(b:Person)",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "a",
+        "img": ""
+      },
+      {
+        "text": ",",
+        "img": ""
+      },
+      {
+        "text": "b",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (a:Person)-[:KNOWS]-(b:Person) RETURN a, b",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  },
+  {
+    "id": "model-020",
+    "track": "modeling",
+    "type": "build",
+    "instruction": "라벨링을 단순화하기 위해, Employee를 Person의 추가 라벨로 부여하세요. (p:Person:Employee)",
+    "hint": "SET p:Employee",
+    "options": [
+      {
+        "text": "MATCH",
+        "img": ""
+      },
+      {
+        "text": "(p:Person",
+        "img": ""
+      },
+      {
+        "text": "{name:'Alice'} )",
+        "img": ""
+      },
+      {
+        "text": "SET",
+        "img": ""
+      },
+      {
+        "text": "p:Employee",
+        "img": ""
+      },
+      {
+        "text": "RETURN",
+        "img": ""
+      },
+      {
+        "text": "p",
+        "img": ""
+      }
+    ],
+    "answer": "MATCH (p:Person {name:'Alice'}) SET p:Employee RETURN p",
+    "distractors": [],
+    "codeContext": "Graph Query"
+  }
+]
