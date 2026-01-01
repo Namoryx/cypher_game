@@ -10,7 +10,7 @@ The quiz spreadsheets under `data/` must follow these rules so that `npm run bui
 - `option_img` also uses `|` with the same number of entries as `option_text`. Leave the cell empty to use empty strings for every option image. A different count results in a build error.
 - `distractors` uses `|` as a separator. Empty cells become an empty array. Every distractor must match one of the options.
 - Required cells: `question_id`, `track`, `type`, `instruction`, `correct_answer`. Empty or missing values will stop the build.
-- `correct_answer` must match one of the options derived from `option_text` for `mcq` questions. For `build` questions, it is the full answer string.
+- `correct_answer`: For `mcq` questions, this must match one of the options from `option_text`. For `build` questions, it represents the complete answer string to be composed from the options.
 - `question_id` values must be unique across all tracks.
 
 Running `npm run build:quizzes` will output JSON files under `public/quizzes/`, sorted by question id per track. Any validation failure will terminate the build.

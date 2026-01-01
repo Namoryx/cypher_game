@@ -684,11 +684,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 const normalizedTrack = this.normalizeTrack(track);
                 return records.map((item, idx) => {
                     if (item.track && this.normalizeTrack(item.track) !== normalizedTrack) {
-                        throw new Error('Track mismatch');
-                    }
-
-                    if (item.type !== 'mcq') {
-                        throw new Error(`Unsupported type ${item.type}`);
+                        throw new Error(`Track mismatch for question ${item.id}`);
                     }
 
                     const choices = (item.options || []).map(opt => ({
@@ -696,20 +692,38 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                         img: opt.img || ''
                     }));
 
-                    const correctIndex = choices.findIndex(opt => opt.text === item.answer);
-                    if (correctIndex === -1) throw new Error('Correct answer missing from choices');
+                    if (item.type === 'mcq') {
+                        const correctIndex = choices.findIndex(opt => opt.text === item.answer);
+                        if (correctIndex === -1) throw new Error('Correct answer missing from choices');
 
-                    return {
-                        id: item.id || `${track}-${idx}`,
-                        type: 'mcq',
-                        prompt: item.instruction,
-                        hint: item.hint || '',
-                        choices,
-                        correctIndex,
-                        correctAnswer: choices[correctIndex].text,
-                        distractors: item.distractors || [],
-                        codeContext: item.codeContext || ''
-                    };
+                        return {
+                            id: item.id || `${track}-${idx}`,
+                            type: 'mcq',
+                            prompt: item.instruction,
+                            hint: item.hint || '',
+                            choices,
+                            correctIndex,
+                            correctAnswer: choices[correctIndex].text,
+                            distractors: item.distractors || [],
+                            codeContext: item.codeContext || ''
+                        };
+                    } else if (item.type === 'build') {
+                        const correctOrder = (item.answer || '').split(/\s+/).filter(Boolean);
+
+                        return {
+                            id: item.id || `${track}-${idx}`,
+                            type: 'query_builder',
+                            prompt: item.instruction,
+                            hint: item.hint || '',
+                            correctAnswer: item.answer,
+                            correctOrder,
+                            wordBank: choices.map(c => c.text),
+                            distractors: item.distractors || [],
+                            codeContext: item.codeContext || ''
+                        };
+                    } else {
+                        throw new Error(`Unsupported type "${item.type}" for question ${item.id}`);
+                    }
                 });
             },
 
@@ -983,8 +997,8 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     isCorrect = (this.state.selectedOption === q.correctIndex);
                     correctText = options[q.correctIndex]?.text || '';
                 } else if (q.type === 'query_builder') {
-                    const attempt = this.state.selectedWords.join(' ').replace(/\s+/g, '').toLowerCase();
-                    const truth = q.correctOrder.join(' ').replace(/\s+/g, '').toLowerCase();
+                    const attempt = this.state.selectedWords.join(' ').replace(/[\s,]+/g, '').toLowerCase();
+                    const truth = q.correctOrder.join(' ').replace(/[\s,]+/g, '').toLowerCase();
                     isCorrect = (attempt === truth);
                     correctText = q.correctOrder.join(' ');
                 }
