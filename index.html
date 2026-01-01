@@ -997,8 +997,8 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     isCorrect = (this.state.selectedOption === q.correctIndex);
                     correctText = options[q.correctIndex]?.text || '';
                 } else if (q.type === 'query_builder') {
-                    const attempt = this.state.selectedWords.join(' ').replace(/\s+/g, '').toLowerCase();
-                    const truth = q.correctOrder.join(' ').replace(/\s+/g, '').toLowerCase();
+                    const attempt = this.state.selectedWords.join(' ').replace(/[\s,]+/g, '').toLowerCase();
+                    const truth = q.correctOrder.join(' ').replace(/[\s,]+/g, '').toLowerCase();
                     isCorrect = (attempt === truth);
                     correctText = q.correctOrder.join(' ');
                 }
