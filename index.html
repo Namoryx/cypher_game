@@ -197,7 +197,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 <!-- ================= APP CONTAINER ================= -->
 <main class="flex-grow flex flex-col items-center justify-center w-full relative" id="app-root">
 <!-- === VIEW 1: LANDING PAGE === -->
-<div class="w-full flex flex-col items-center justify-center px-6 py-12 lg:flex-row lg:gap-20 max-w-6xl mx-auto fade-in hidden" id="landing-view">
+    <div class="w-full flex flex-col items-center justify-center px-6 py-12 lg:flex-row lg:gap-20 max-w-6xl mx-auto fade-in" id="landing-view">
 <div class="w-64 h-64 md:w-80 md:h-80 mb-10 lg:mb-0 mascot-float relative" id="landing-mascot">
 <!-- Inline SVG Mascot -->
 <svg class="w-full h-full drop-shadow-xl" fill="none" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
@@ -244,7 +244,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 </div>
 </div>
 <!-- === VIEW 2: TRACK SELECTION === -->
-<div class="w-full max-w-5xl px-4 py-10 flex flex-col items-center fade-in" id="track-view">
+    <div class="w-full max-w-5xl px-4 py-10 flex flex-col items-center fade-in hidden" id="track-view">
 <h3 class="text-2xl font-bold text-gray-700 mb-2">학습할 Track을 선택하세요</h3>
 <p class="text-gray-400 mb-10">그래프DB 개념부터 고급 모델링까지</p>
 <!-- Dynamic Grid Container -->
@@ -299,6 +299,18 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                             <span class="block text-xs text-gray-400 font-bold uppercase">4 Lessons</span>
                         </div>
                     </div></div>
+<div class="hidden w-full max-w-3xl bg-[#FFDFE0] border border-[#FF4B4B] rounded-2xl p-4 mt-6" id="load-error">
+    <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-[#FF4B4B] text-2xl">error</span>
+            <div>
+                <p class="font-bold text-[#FF4B4B] leading-tight">문제 로딩 실패</p>
+                <p class="text-sm text-gray-700" id="load-error-text">문제 로딩 실패</p>
+            </div>
+        </div>
+        <button class="btn-3d btn-outline px-4 py-2 rounded-lg font-bold" onclick="app.clearLoadError(); app.goHome();">홈으로</button>
+    </div>
+</div>
 </div>
 <!-- === VIEW 3: LESSON INTERFACE === -->
 <div class="w-full h-full flex flex-col min-h-screen bg-white absolute top-0 z-50 hidden" id="lesson-view">
@@ -574,58 +586,19 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
         }
 
         // === Application Logic & Data Loader ===
+        const TRACK_CONFIG = [
+            { key: "core", label: "Core", icon: () => SVGLibrary.nodeIcon() },
+            { key: "aggregation", label: "Aggregation", icon: () => SVGLibrary.propIcon() },
+            { key: "paths", label: "Paths", icon: () => SVGLibrary.relIcon() },
+            { key: "modeling", label: "Modeling", icon: () => SVGLibrary.tableIcon() }
+        ];
+
         const app = {
-            // Placeholder for DB data
-            data: {
-                "Core": [
-                    {
-                        type: "select_concept",
-                        instruction: "다음 중 'Graph Node(노드)'를 나타내는 것을 고르세요.",
-                        hint: "노드는 그래프의 개체(Entity)를 나타내며 주로 원으로 표현됩니다.",
-                        correctIndex: 1,
-                        options: [
-                            { text: "Relationship", imgType: "relIcon" },
-                            { text: "Node", imgType: "nodeIcon" },
-                            { text: "Table", imgType: "tableIcon" },
-                            { text: "Property", imgType: "propIcon" }
-                        ]
-                    },
-                    {
-                        type: "query_builder",
-                        instruction: "'Person' 라벨을 가진 모든 노드를 찾는 쿼리를 완성하세요.",
-                        hint: "MATCH 구문은 패턴을 찾을 때 사용합니다.",
-                        correctOrder: ["MATCH", "(n:Person)", "RETURN", "n"],
-                        wordBank: ["(n:Person)", "WHERE", "RETURN", "MATCH", "CREATE", "n", "DELETE"],
-                        codeContext: "Graph Query"
-                    },
-                    {
-                        type: "select_concept",
-                        instruction: "다음 중 Cypher에서 '관계(Relationship)'를 표현하는 문법은?",
-                        hint: "관계는 대괄호 [] 안에 표현됩니다.",
-                        correctIndex: 0,
-                        options: [
-                            { text: "-[:KNOWS]->", imgType: "codeSyntax", syntax: "-[:REL]->" },
-                            { text: "(n:Person)", imgType: "codeSyntax", syntax: "(n:Label)" },
-                            { text: "{name: 'Alice'}", imgType: "codeSyntax", syntax: "{key:val}" },
-                            { text: "RETURN *", imgType: "codeSyntax", syntax: "RETURN *" }
-                        ]
-                    },
-                    {
-                        type: "query_builder",
-                        instruction: "이름이 'Alice'인 사용자를 찾는 쿼리를 작성하세요.",
-                        hint: "조건을 걸 때는 WHERE 절을 사용하거나 속성값을 매칭합니다.",
-                        correctOrder: ["MATCH", "(u:User)", "WHERE", "u.name = 'Alice'", "RETURN", "u"],
-                        wordBank: ["u.name = 'Alice'", "MATCH", "RETURN", "u", "(u:User)", "WHERE", "SET", "AND"],
-                        codeContext: "Filter Query"
-                    }
-                ],
-                "Aggregation": [],
-                "Paths": [],
-                "Modeling": []
-            },
-            
+            data: {},
+            trackMeta: {},
+
             state: {
-                currentTrack: "Core",
+                currentTrack: "core",
                 currentStep: 0,
                 lives: 5,
                 selectedOption: null,
@@ -634,10 +607,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             },
 
             init: function() {
-                // Initialize placeholders
-                this.data["Aggregation"] = JSON.parse(JSON.stringify(this.data["Core"]));
-                this.data["Paths"] = JSON.parse(JSON.stringify(this.data["Core"]));
-                this.data["Modeling"] = JSON.parse(JSON.stringify(this.data["Core"]));
+                this.state.currentTrack = this.normalizeTrack(localStorage.getItem('currentTrack')) || 'core';
 
                 SoundManager.init();
                 document.addEventListener('keydown', (e) => {
@@ -659,27 +629,121 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                }
             */
 
+            normalizeTrack: function(track) {
+                if (!track) return null;
+                const lower = (track || '').toString().toLowerCase();
+                const exists = TRACK_CONFIG.some(t => t.key === lower);
+                return exists ? lower : null;
+            },
+
+            resolveBasePath: function() {
+                let metaBase = null;
+                try {
+                    metaBase = (import.meta && import.meta.env && import.meta.env.BASE_URL) ? import.meta.env.BASE_URL : null;
+                } catch (e) {
+                    metaBase = null;
+                }
+                const pathBase = (window.location && window.location.pathname) ? window.location.pathname.replace(/[^/]*$/, '') : '/';
+                const fallbackBase = (window.__BASE_URL || pathBase || '/');
+                const base = metaBase || fallbackBase || '/';
+                return base.endsWith('/') ? base : `${base}/`;
+            },
+
+            buildQuizUrls: function(track) {
+                const base = this.resolveBasePath();
+                const normalizedBase = base.endsWith('/') ? base : `${base}/`;
+                return [
+                    `${normalizedBase}quizzes/${track}.json`,
+                    `${normalizedBase}public/quizzes/${track}.json`
+                ];
+            },
+
+            fetchTrackQuestions: async function(track) {
+                const urls = this.buildQuizUrls(track);
+                let lastError = null;
+                for (const url of urls) {
+                    try {
+                        const res = await fetch(url);
+                        if (!res.ok) {
+                            lastError = new Error(`HTTP ${res.status}`);
+                            continue;
+                        }
+                        const payload = await res.json();
+                        const adapted = this.adaptQuestions(payload, track);
+                        this.trackMeta[track] = { count: adapted.length };
+                        return adapted;
+                    } catch (err) {
+                        lastError = err;
+                    }
+                }
+                throw lastError || new Error('문제 로딩 실패');
+            },
+
+            adaptQuestions: function(records, track) {
+                if (!Array.isArray(records)) throw new Error('Invalid quiz payload');
+                const normalizedTrack = this.normalizeTrack(track);
+                return records.map((item, idx) => {
+                    if (item.track && this.normalizeTrack(item.track) !== normalizedTrack) {
+                        throw new Error('Track mismatch');
+                    }
+
+                    if (item.type !== 'mcq') {
+                        throw new Error(`Unsupported type ${item.type}`);
+                    }
+
+                    const choices = (item.options || []).map(opt => ({
+                        text: opt.text || '',
+                        img: opt.img || ''
+                    }));
+
+                    const correctIndex = choices.findIndex(opt => opt.text === item.answer);
+                    if (correctIndex === -1) throw new Error('Correct answer missing from choices');
+
+                    return {
+                        id: item.id || `${track}-${idx}`,
+                        type: 'mcq',
+                        prompt: item.instruction,
+                        hint: item.hint || '',
+                        choices,
+                        correctIndex,
+                        correctAnswer: choices[correctIndex].text,
+                        distractors: item.distractors || [],
+                        codeContext: item.codeContext || ''
+                    };
+                });
+            },
+
+            showLoadError: function(message) {
+                const box = document.getElementById('load-error');
+                const textEl = document.getElementById('load-error-text');
+                textEl.innerText = message || '문제 로딩 실패';
+                box.classList.remove('hidden');
+            },
+
+            clearLoadError: function() {
+                const box = document.getElementById('load-error');
+                box.classList.add('hidden');
+            },
+
+            // --- Render Logic ---
+
             // --- Render Logic ---
             renderTracks: function() {
                 const grid = document.getElementById('track-grid');
                 grid.innerHTML = '';
-                
-                Object.keys(this.data).forEach(trackName => {
-                    const count = this.data[trackName].length;
+
+                TRACK_CONFIG.forEach(track => {
+                    const count = (this.data[track.key] || []).length || (this.trackMeta[track.key]?.count || 0);
                     const card = document.createElement('div');
                     card.className = "option-card rounded-2xl p-6 flex flex-col items-center gap-4 bg-white hover:bg-gray-50 transition-all transform hover:scale-105";
-                    card.onclick = () => this.startLesson(trackName);
-                    
-                    let iconSVG = SVGLibrary.defaultIcon();
-                    if(trackName.includes('Core')) iconSVG = SVGLibrary.nodeIcon();
-                    else if(trackName.includes('Path')) iconSVG = SVGLibrary.relIcon();
-                    else if(trackName.includes('Model')) iconSVG = SVGLibrary.tableIcon();
-                    else if(trackName.includes('Agg')) iconSVG = SVGLibrary.propIcon();
+                    card.onclick = () => this.startLesson(track.key);
+
+                    const iconSVG = (typeof track.icon === 'function') ? track.icon() : SVGLibrary.defaultIcon();
 
                     card.innerHTML = `
                         <div class="w-16 h-16">${iconSVG}</div>
                         <div class="text-center">
-                            <span class="block font-extrabold text-gray-700 text-lg">${trackName}</span>
+                            <span class="block font-extrabold text-gray-700 text-lg">${track.label}</span>
                             <span class="block text-xs text-gray-400 font-bold uppercase">${count} Lessons</span>
                         </div>
                     `;
@@ -693,17 +757,44 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 document.getElementById('track-view').classList.remove('hidden');
             },
 
-            startLesson: function(trackName) {
-                this.state.currentTrack = trackName;
-                document.getElementById('track-view').classList.add('hidden');
-                document.getElementById('main-header').classList.add('hidden');
-                document.getElementById('lesson-view').classList.remove('hidden');
-                
-                this.state.currentStep = 0;
-                this.state.lives = 5;
-                this.updateLives();
-                this.renderQuestion();
-                Tone.start();
+            goHome: function() {
+                document.getElementById('lesson-view').classList.add('hidden');
+                document.getElementById('main-header').classList.remove('hidden');
+                document.getElementById('track-view').classList.remove('hidden');
+                document.getElementById('landing-view').classList.add('hidden');
+            },
+
+            startLesson: async function(trackName) {
+                const normalized = this.normalizeTrack(trackName);
+                if (!normalized) {
+                    this.showLoadError('문제 로딩 실패');
+                    this.goHome();
+                    return;
+                }
+
+                try {
+                    this.clearLoadError();
+                    const questions = await this.fetchTrackQuestions(normalized);
+                    this.data[normalized] = questions;
+                    this.state.currentTrack = normalized;
+                    localStorage.setItem('currentTrack', normalized);
+
+                    this.state.currentStep = 0;
+                    this.state.lives = 5;
+                    this.updateLives();
+
+                    document.getElementById('track-view').classList.add('hidden');
+                    document.getElementById('main-header').classList.add('hidden');
+                    document.getElementById('lesson-view').classList.remove('hidden');
+
+                    this.renderQuestion();
+                    Tone.start();
+                    this.renderTracks();
+                } catch (error) {
+                    console.error('Quiz load failed', error);
+                    this.showLoadError('문제 로딩 실패');
+                    this.goHome();
+                }
             },
 
             requestQuit: function() { document.getElementById('quit-modal').classList.remove('hidden'); },
@@ -711,26 +802,34 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             confirmQuit: function() {
                 this.closeModal();
                 this.state.currentStep = 0;
-                document.getElementById('lesson-view').classList.add('hidden');
-                document.getElementById('main-header').classList.remove('hidden');
-                document.getElementById('track-view').classList.remove('hidden'); 
+                this.goHome();
                 Tone.Transport.stop();
             },
             handleModalClick: function(e) { if (e.target.id === 'quit-modal') this.closeModal(); },
 
             updateLives: function() { document.getElementById('lives-count').innerText = this.state.lives; },
             updateProgress: function() {
-                const track = this.data[this.state.currentTrack];
-                const pct = ((this.state.currentStep) / track.length) * 100;
+                const track = this.data[this.state.currentTrack] || [];
+                const pct = track.length ? ((this.state.currentStep) / track.length) * 100 : 0;
                 document.getElementById('progress-bar').style.width = `${pct}%`;
             },
 
             renderQuestion: function() {
                 const track = this.data[this.state.currentTrack];
+                if (!track || track.length === 0) {
+                    this.showLoadError('문제 로딩 실패');
+                    this.goHome();
+                    return;
+                }
+
                 const q = track[this.state.currentStep];
+                if (!q) {
+                    this.showCompleteScreen();
+                    return;
+                }
                 const container = document.getElementById('question-container');
                 container.innerHTML = '';
-                
+
                 this.resetBottomBar();
                 this.state.selectedOption = null;
                 this.state.selectedWords = [];
@@ -738,10 +837,10 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 
                 const header = document.createElement('h2');
                 header.className = "text-xl md:text-2xl font-bold text-gray-700 mb-6 text-center w-full";
-                header.innerHTML = q.instruction;
+                header.innerHTML = q.prompt || q.instruction;
                 container.appendChild(header);
 
-                if (q.type === 'select_concept') {
+                if (q.type === 'mcq' || q.type === 'select_concept') {
                     this.renderSelectConcept(q, container);
                 } else if (q.type === 'query_builder') {
                     this.renderQueryBuilder(q, container);
@@ -751,23 +850,30 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             renderSelectConcept: function(q, container) {
                 const grid = document.createElement('div');
                 grid.className = "grid grid-cols-2 gap-4 w-full max-w-lg";
-                q.options.forEach((opt, idx) => {
+                const choices = q.choices || q.options || [];
+                choices.forEach((opt, idx) => {
                     const card = document.createElement('div');
                     card.className = "option-card rounded-2xl p-4 flex flex-col items-center gap-3 bg-white";
                     card.dataset.index = idx;
                     card.onclick = () => this.selectOption(idx, card);
-                    
+
                     const imgContainer = document.createElement('div');
                     imgContainer.className = "w-20 h-20 md:w-28 md:h-28";
-                    
-                    if (opt.imgType === 'codeSyntax') {
+
+                    if (opt.img) {
+                         const imgEl = document.createElement('img');
+                         imgEl.src = opt.img;
+                         imgEl.alt = opt.text || 'option image';
+                         imgEl.className = "w-full h-full object-contain";
+                         imgContainer.appendChild(imgEl);
+                    } else if (opt.imgType === 'codeSyntax') {
                          imgContainer.innerHTML = SVGLibrary.codeSyntax(opt.syntax || opt.text);
                     } else if (SVGLibrary[opt.imgType]) {
                          imgContainer.innerHTML = SVGLibrary[opt.imgType]();
                     } else {
                          imgContainer.innerHTML = SVGLibrary.defaultIcon();
                     }
-                    
+
                     const label = document.createElement('span');
                     label.className = "text-gray-600 font-bold text-lg text-center break-words w-full";
                     label.innerText = opt.text;
@@ -863,13 +969,19 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 
             checkAnswer: function() {
                 const track = this.data[this.state.currentTrack];
-                const q = track[this.state.currentStep];
+                const q = track ? track[this.state.currentStep] : null;
+                if (!q) {
+                    this.showLoadError('문제 로딩 실패');
+                    this.goHome();
+                    return;
+                }
                 let isCorrect = false;
                 let correctText = "";
 
-                if (q.type === 'select_concept') {
+                if (q.type === 'mcq' || q.type === 'select_concept') {
+                    const options = q.choices || q.options || [];
                     isCorrect = (this.state.selectedOption === q.correctIndex);
-                    correctText = q.options[q.correctIndex].text;
+                    correctText = options[q.correctIndex]?.text || '';
                 } else if (q.type === 'query_builder') {
                     const attempt = this.state.selectedWords.join(' ').replace(/\s+/g, '').toLowerCase();
                     const truth = q.correctOrder.join(' ').replace(/\s+/g, '').toLowerCase();
