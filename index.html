@@ -181,6 +181,10 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 <span class="material-symbols-outlined text-lg">terminal</span>
                 Cypher Playground
             </button>
+<button aria-label="설정" class="flex items-center gap-2 btn-3d btn-outline px-3 py-1.5 rounded-xl text-xs font-bold uppercase hover:bg-gray-50 text-gray-500 border-gray-300" onclick="app.openSettings()">
+<span class="material-symbols-outlined text-base">settings</span>
+<span class="hidden md:inline">설정</span>
+</button>
 <button class="flex items-center gap-2 btn-3d btn-outline px-3 py-1.5 rounded-xl text-xs font-bold uppercase hover:bg-gray-50 text-gray-500 border-gray-300" onclick="downloadHTML()">
 <span class="material-symbols-outlined text-base">download</span>
 <span class="hidden md:inline">HTML 저장</span>
@@ -237,12 +241,12 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 <button class="btn-3d btn-green w-full md:w-80 py-3 rounded-xl text-lg font-bold tracking-wide uppercase" onclick="app.startFlow()">
                         Story 모드 시작하기
                     </button>
-<button class="btn-3d btn-outline w-full md:w-80 py-3 rounded-xl text-lg font-bold tracking-wide uppercase">
+<button class="btn-3d btn-outline w-full md:w-80 py-3 rounded-xl text-lg font-bold tracking-wide uppercase" onclick="app.startPracticeFlow()">
                         Practice 모드 (약점 공략)
                     </button>
-</div>
-</div>
-</div>
+                </div>
+            </div>
+        </div>
 <!-- === VIEW 2: TRACK SELECTION === -->
     <div class="w-full max-w-5xl px-4 py-10 flex flex-col items-center fade-in hidden" id="track-view">
 <h3 class="text-2xl font-bold text-gray-700 mb-2">학습할 Track을 선택하세요</h3>
@@ -320,11 +324,15 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 <button aria-label="학습 종료" class="text-gray-400 hover:text-gray-600 transition p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300" onclick="app.requestQuit()">
 <span class="material-symbols-outlined text-3xl">close</span>
 </button>
+<span class="px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wide bg-gray-100 text-gray-600" id="mode-badge">Story</span>
 <!-- Progress Bar -->
 <div class="flex-grow h-4 bg-gray-200 rounded-full overflow-hidden relative mx-2">
 <div class="absolute top-1 left-2 right-2 h-1 bg-white/20 rounded-full z-10"></div>
 <div class="progress-fill h-full bg-[#58CC02] rounded-full w-0" id="progress-bar" style="width: 0%;"></div>
 </div>
+<button aria-label="설정" class="text-gray-400 hover:text-gray-600 transition p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300" onclick="app.openSettings()">
+<span class="material-symbols-outlined text-3xl">settings</span>
+</button>
 <!-- Lives -->
 <div class="flex items-center gap-1 text-[#FF4B4B] shrink-0">
 <span class="material-symbols-outlined text-3xl filled">favorite</span>
@@ -414,11 +422,11 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 <div class="flex gap-4 mt-4 w-full justify-center">
 <div class="w-32 bg-[#FFC800] rounded-2xl p-4 text-white shadow-lg btn-3d border-[#E59400]">
 <div class="text-xs font-bold opacity-90 uppercase">Graph XP</div>
-<div class="text-3xl font-extrabold">+50</div>
+<div class="text-3xl font-extrabold" id="result-xp">+0</div>
 </div>
 <div class="w-32 bg-[#0066CC] rounded-2xl p-4 text-white shadow-lg btn-3d border-[#004C99]">
 <div class="text-xs font-bold opacity-90 uppercase">Accuracy</div>
-<div class="text-3xl font-extrabold">100%</div>
+<div class="text-3xl font-extrabold" id="result-accuracy">0%</div>
 </div>
 </div>
 <div class="mt-8 p-4 bg-gray-100 rounded-xl w-full max-w-md">
@@ -427,7 +435,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     Streak
                 </div>
 <div class="text-left text-sm text-gray-600">
-                    3일 연속 학습 중입니다! 내일도 접속해서 그래프 마스터가 되세요.
+                    <span id="result-streak">오늘의 연속 정답 기록을 확인해보세요.</span>
                 </div>
 </div>
 <button class="btn-3d btn-green w-full md:w-80 py-3 rounded-xl text-lg font-bold tracking-wide uppercase mt-12" onclick="window.location.reload()">
@@ -435,6 +443,32 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             </button>
 </div>
 </main>
+<!-- ================= MODAL (Settings) ================= -->
+<div aria-modal="true" class="fixed inset-0 z-[60] flex items-center justify-center modal-backdrop fade-in hidden" id="settings-modal" onclick="app.handleSettingsModal(event)" role="dialog">
+<div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 w-full max-w-md m-4 flex flex-col gap-4 transform scale-100 transition-transform" role="document">
+<div class="flex items-center justify-between w-full">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#0066CC]">settings</span>
+<h3 class="text-xl font-extrabold text-gray-800">설정</h3>
+</div>
+<button aria-label="설정 닫기" class="text-gray-400 hover:text-gray-600 transition p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300" onclick="app.closeSettings()">
+<span class="material-symbols-outlined text-2xl">close</span>
+</button>
+</div>
+<div class="w-full">
+<div class="flex items-center justify-between text-sm font-bold text-gray-600 mb-2">
+<span>사운드 볼륨</span>
+<span class="text-[#0066CC]" id="volume-value">--%</span>
+</div>
+<input aria-label="사운드 볼륨" class="w-full accent-[#0066CC] cursor-pointer" id="volume-slider" max="1" min="0.1" step="0.01" type="range" value="0.38">
+<div class="flex justify-between text-[11px] text-gray-400 font-bold mt-1">
+<span>조용하게</span>
+<span>또렷하게</span>
+</div>
+</div>
+<p class="text-xs text-gray-500 leading-relaxed">정답/오답 효과음에 공통 적용됩니다. 원하는 크기로 바로 조절해보세요.</p>
+</div>
+</div>
 <!-- ================= MODAL (Quit Confirmation) ================= -->
 <div aria-modal="true" class="fixed inset-0 z-[60] flex items-center justify-center modal-backdrop fade-in hidden" id="quit-modal" onclick="app.handleModalClick(event)" role="dialog">
 <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 w-full max-w-sm m-4 flex flex-col items-center text-center transform scale-100 transition-transform">
@@ -536,37 +570,77 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             correctSynth: null,
             wrongSynth: null,
             volumeNode: null,
-            
+            correctSpace: null,
+            volume: 0.38,
+            minVolume: 0.1,
+            maxVolume: 1,
+            storageKey: 'soundVolume',
+
             init: function() {
-                this.volumeNode = new Tone.Gain(0.4).toDestination();
-                this.correctSynth = new Tone.PolySynth(Tone.Synth, {
-                    oscillator: { type: "triangle" },
-                    envelope: { attack: 0.02, decay: 0.1, sustain: 0.1, release: 2.0 } 
+                this.volume = this.loadVolumePreference();
+                this.volumeNode = new Tone.Gain(this.volume).toDestination();
+
+                this.correctSpace = new Tone.Reverb({
+                    decay: 1.2,
+                    wet: 0.15,
+                    preDelay: 0.02
                 }).connect(this.volumeNode);
-                this.wrongSynth = new Tone.Synth({
-                    oscillator: { type: "sawtooth" },
-                    envelope: { attack: 0.05, decay: 0.2, sustain: 0.2, release: 1.0 }
+
+                this.correctSynth = new Tone.AMSynth({
+                    oscillator: { type: "sine" },
+                    harmonicity: 2,
+                    detune: 4,
+                    envelope: { attack: 0.01, decay: 0.2, sustain: 0.15, release: 0.7 }
+                }).connect(this.correctSpace);
+
+                const mellowFilter = new Tone.Filter({
+                    type: "lowpass",
+                    frequency: 180,
+                    rolloff: -24,
+                    Q: 0.8
                 }).connect(this.volumeNode);
+
+                this.wrongSynth = new Tone.MembraneSynth({
+                    pitchDecay: 0.008,
+                    octaves: 1.2,
+                    oscillator: { type: "sine" },
+                    envelope: { attack: 0.005, decay: 0.35, sustain: 0, release: 0.25 }
+                }).connect(mellowFilter);
+            },
+            loadVolumePreference: function() {
+                const stored = parseFloat(localStorage.getItem(this.storageKey));
+                const fallback = this.volume;
+                if (!Number.isFinite(stored)) return fallback;
+                return Math.min(this.maxVolume, Math.max(this.minVolume, stored));
+            },
+            setVolume: function(value, { persist = true } = {}) {
+                const clamped = Math.min(this.maxVolume, Math.max(this.minVolume, value || 0));
+                this.volume = clamped;
+                if (this.volumeNode) {
+                    this.volumeNode.gain.rampTo(clamped, 0.05);
+                }
+                if (persist) {
+                    localStorage.setItem(this.storageKey, clamped);
+                }
+            },
+            getVolume: function() {
+                return this.volume;
             },
             playCorrect: function() {
                 try {
-                    if(Tone.context.state !== 'running') Tone.start();
-                    this.correctSynth.releaseAll();
+                    if (Tone.context.state !== 'running') Tone.start();
                     const now = Tone.now();
-                    this.correctSynth.triggerAttackRelease("C5", "8n", now);
-                    this.correctSynth.triggerAttackRelease("E5", "8n", now + 0.05);
-                    this.correctSynth.triggerAttackRelease("G5", "8n", now + 0.10);
-                    this.correctSynth.triggerAttackRelease("C6", "2n", now + 0.15); 
+                    this.correctSynth.triggerAttackRelease("A5", 0.25, now);
+                    this.correctSynth.triggerAttackRelease("E6", 0.2, now + 0.08);
+                    this.correctSynth.triggerAttackRelease("B5", 0.3, now + 0.16);
                 } catch(e) { console.warn("Audio blocked", e); }
             },
             playWrong: function() {
                 try {
-                    if(Tone.context.state !== 'running') Tone.start();
-                    this.wrongSynth.triggerRelease();
+                    if (Tone.context.state !== 'running') Tone.start();
                     const now = Tone.now();
-                    this.wrongSynth.triggerAttackRelease("G3", "8n", now);
-                    this.wrongSynth.triggerAttackRelease("F#3", "8n", now + 0.2);
-                    this.wrongSynth.triggerAttackRelease("C3", "2n", now + 0.4); 
+                    this.wrongSynth.triggerAttackRelease("D2", 0.45, now);
+                    this.wrongSynth.triggerAttackRelease("A1", 0.3, now + 0.12);
                 } catch(e) { console.warn("Audio blocked", e); }
             }
         };
@@ -596,9 +670,25 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
         const app = window.app = {
             data: {},
             trackMeta: {},
+            performance: {},
+            practiceSession: {
+                items: [],
+                index: 0
+            },
+            storySession: {
+                items: []
+            },
+            sessionStats: {
+                total: 0,
+                correct: 0,
+                wrong: 0,
+                streak: 0,
+                bestStreak: 0
+            },
 
             state: {
                 currentTrack: "core",
+                mode: 'story',
                 currentStep: 0,
                 lives: 5,
                 selectedOption: null,
@@ -608,16 +698,63 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 
             init: function() {
                 this.state.currentTrack = this.normalizeTrack(localStorage.getItem('currentTrack')) || 'core';
+                this.loadPerformance();
 
                 SoundManager.init();
+                this.setupVolumeUI();
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape') this.closeModal();
                 });
                 this.renderTracks();
+                this.preloadTrackCounts();
+            },
+
+            preloadTrackCounts: async function() {
+                await Promise.allSettled(TRACK_CONFIG.map(async (track) => {
+                    try {
+                        await this.loadTrackData(track.key);
+                    } catch (error) {
+                        console.error(`Track preload failed for ${track.key}`, error);
+                    }
+                }));
+                this.renderTracks();
+            },
+
+            setupVolumeUI: function() {
+                const slider = document.getElementById('volume-slider');
+                const valueEl = document.getElementById('volume-value');
+                if (!slider || !valueEl) return;
+
+                slider.min = SoundManager.minVolume;
+                slider.max = SoundManager.maxVolume;
+                slider.step = 0.01;
+
+                this.syncVolumeSlider();
+
+                slider.addEventListener('input', (e) => {
+                    const vol = parseFloat(e.target.value);
+                    if (!Number.isFinite(vol)) return;
+                    SoundManager.setVolume(vol);
+                    this.updateVolumeLabel(vol);
+                });
+            },
+            syncVolumeSlider: function() {
+                const slider = document.getElementById('volume-slider');
+                const valueEl = document.getElementById('volume-value');
+                if (!slider || !valueEl) return;
+                const current = SoundManager.getVolume();
+                slider.value = current;
+                this.updateVolumeLabel(current);
+            },
+            updateVolumeLabel: function(volume) {
+                const valueEl = document.getElementById('volume-value');
+                if (!valueEl) return;
+                const pct = Math.round((volume || 0) * 100);
+                valueEl.textContent = `${pct}%`;
             },
 
             // --- Database / API Fetch Simulation ---
-            /* 
+            /*
                Future Integration Point:
                async fetchQuestions() {
                    const response = await fetch('/api/questions');
@@ -634,6 +771,23 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 const lower = (track || '').toString().toLowerCase();
                 const exists = TRACK_CONFIG.some(t => t.key === lower);
                 return exists ? lower : null;
+            },
+
+            loadTrackData: async function(track) {
+                const normalizedTrack = this.normalizeTrack(track);
+                if (!normalizedTrack) {
+                    throw new Error('Invalid track');
+                }
+
+                if (Array.isArray(this.data[normalizedTrack]) && this.data[normalizedTrack].length > 0) {
+                    this.trackMeta[normalizedTrack] = { count: this.data[normalizedTrack].length };
+                    return this.data[normalizedTrack];
+                }
+
+                const questions = await this.fetchTrackQuestions(normalizedTrack);
+                this.data[normalizedTrack] = questions;
+                this.trackMeta[normalizedTrack] = { count: questions.length };
+                return questions;
             },
 
             resolveBasePath: function() {
@@ -747,7 +901,8 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 grid.innerHTML = '';
 
                 TRACK_CONFIG.forEach(track => {
-                    const count = (this.data[track.key] || []).length || (this.trackMeta[track.key]?.count || 0);
+                    const resolvedCount = this.trackMeta[track.key]?.count ?? this.data[track.key]?.length;
+                    const countLabel = Number.isFinite(resolvedCount) ? resolvedCount : '...';
                     const card = document.createElement('div');
                     card.className = "option-card rounded-2xl p-6 flex flex-col items-center gap-4 bg-white hover:bg-gray-50 transition-all transform hover:scale-105";
                     card.onclick = () => this.startLesson(track.key);
@@ -758,17 +913,126 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                         <div class="w-16 h-16">${iconSVG}</div>
                         <div class="text-center">
                             <span class="block font-extrabold text-gray-700 text-lg">${track.label}</span>
-                            <span class="block text-xs text-gray-400 font-bold uppercase">${count} Lessons</span>
+                            <span class="block text-xs text-gray-400 font-bold uppercase">${countLabel} Lessons</span>
                         </div>
                     `;
                     grid.appendChild(card);
                 });
             },
 
+            updateModeBadge: function() {
+                const badge = document.getElementById('mode-badge');
+                if (!badge) return;
+                if (this.state.mode === 'practice') {
+                    badge.innerText = 'Practice';
+                    badge.classList.remove('bg-gray-100', 'text-gray-600');
+                    badge.classList.add('bg-[#FFE8C4]', 'text-[#E59400]');
+                } else {
+                    badge.innerText = 'Story';
+                    badge.classList.remove('bg-[#FFE8C4]', 'text-[#E59400]');
+                    badge.classList.add('bg-gray-100', 'text-gray-600');
+                }
+            },
+
+            loadPerformance: function() {
+                try {
+                    const raw = localStorage.getItem('performanceLog');
+                    this.performance = raw ? JSON.parse(raw) : {};
+                } catch (error) {
+                    console.warn('Failed to load performance log', error);
+                    this.performance = {};
+                }
+            },
+
+            savePerformance: function() {
+                try {
+                    localStorage.setItem('performanceLog', JSON.stringify(this.performance));
+                } catch (error) {
+                    console.warn('Failed to persist performance log', error);
+                }
+            },
+
+            recordPerformance: function(track, questionId, isCorrect) {
+                if (!track || !questionId) return;
+                const key = `${track}:${questionId}`;
+                const current = this.performance[key] || { track, correct: 0, wrong: 0 };
+                if (isCorrect) {
+                    current.correct = (current.correct || 0) + 1;
+                } else {
+                    current.wrong = (current.wrong || 0) + 1;
+                }
+                current.updatedAt = Date.now();
+                this.performance[key] = current;
+                this.savePerformance();
+            },
+
+            buildPracticeQueue: function() {
+                const queue = [];
+                const entries = Object.entries(this.performance || {});
+                entries.sort(([, a], [, b]) => {
+                    const scoreA = (a.wrong || 0) - (a.correct || 0);
+                    const scoreB = (b.wrong || 0) - (b.correct || 0);
+                    if (scoreA === scoreB) {
+                        return (b.updatedAt || 0) - (a.updatedAt || 0);
+                    }
+                    return scoreB - scoreA;
+                });
+
+                entries.forEach(([key, stats]) => {
+                    if ((stats.wrong || 0) === 0 || (stats.wrong || 0) <= (stats.correct || 0)) return;
+                    if (!stats.track) return;
+                    const trackKey = stats.track;
+                    const questions = this.data[trackKey] || [];
+                    const match = questions.find(q => q.id === key.replace(`${trackKey}:`, ''));
+                    if (match) {
+                        queue.push({ ...match, practiceTrack: trackKey });
+                    }
+                });
+
+                return queue;
+            },
+
             // --- Navigation ---
             startFlow: function() {
+                this.state.mode = 'story';
+                this.resetSessionStats();
                 document.getElementById('landing-view').classList.add('hidden');
                 document.getElementById('track-view').classList.remove('hidden');
+                this.updateModeBadge();
+            },
+
+            startPracticeFlow: async function() {
+                this.state.mode = 'practice';
+                this.resetSessionStats();
+                document.getElementById('landing-view').classList.add('hidden');
+                document.getElementById('track-view').classList.add('hidden');
+                document.getElementById('main-header').classList.add('hidden');
+                this.updateModeBadge();
+
+                try {
+                    await Promise.all(TRACK_CONFIG.map(track => this.loadTrackData(track.key)));
+                    const queue = this.buildPracticeQueue();
+                    if (queue.length === 0) {
+                        alert('연습할 오답이 아직 없습니다. 스토리 모드에서 문제를 풀어주세요.');
+                        this.goHome();
+                        this.state.mode = 'story';
+                        this.updateModeBadge();
+                        return;
+                    }
+                    this.practiceSession.items = queue;
+                    this.practiceSession.index = 0;
+                    this.state.lives = 5;
+                    this.updateLives();
+
+                    document.getElementById('lesson-view').classList.remove('hidden');
+                    this.renderQuestion();
+                } catch (error) {
+                    console.error('Practice mode failed', error);
+                    this.showLoadError('Practice 세션을 준비하지 못했습니다');
+                    this.goHome();
+                    this.state.mode = 'story';
+                    this.updateModeBadge();
+                }
             },
 
             goHome: function() {
@@ -776,6 +1040,8 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 document.getElementById('main-header').classList.remove('hidden');
                 document.getElementById('track-view').classList.remove('hidden');
                 document.getElementById('landing-view').classList.add('hidden');
+                this.state.mode = 'story';
+                this.updateModeBadge();
             },
 
             startLesson: async function(trackName) {
@@ -787,9 +1053,11 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 }
 
                 try {
+                    this.state.mode = 'story';
+                    this.resetSessionStats();
                     this.clearLoadError();
-                    const questions = await this.fetchTrackQuestions(normalized);
-                    this.data[normalized] = questions;
+                    const questions = await this.loadTrackData(normalized);
+                    this.storySession.items = this.shuffleQuestions(questions);
                     this.state.currentTrack = normalized;
                     localStorage.setItem('currentTrack', normalized);
 
@@ -821,22 +1089,62 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             },
             handleModalClick: function(e) { if (e.target.id === 'quit-modal') this.closeModal(); },
 
+            openSettings: function() {
+                const modal = document.getElementById('settings-modal');
+                if (!modal) return;
+                modal.classList.remove('hidden');
+                this.syncVolumeSlider();
+            },
+            closeSettings: function() {
+                const modal = document.getElementById('settings-modal');
+                if (!modal) return;
+                modal.classList.add('hidden');
+            },
+            handleSettingsModal: function(e) { if (e.target.id === "settings-modal") this.closeSettings(); },
+
+
             updateLives: function() { document.getElementById('lives-count').innerText = this.state.lives; },
             updateProgress: function() {
-                const track = this.data[this.state.currentTrack] || [];
-                const pct = track.length ? ((this.state.currentStep) / track.length) * 100 : 0;
+                const track = this.state.mode === 'practice' ? this.practiceSession.items : (this.storySession.items || []);
+                const currentIndex = this.state.mode === 'practice' ? this.practiceSession.index : this.state.currentStep;
+                const pct = track.length ? (currentIndex / track.length) * 100 : 0;
                 document.getElementById('progress-bar').style.width = `${pct}%`;
             },
 
+            resetSessionStats: function() {
+                this.sessionStats = { total: 0, correct: 0, wrong: 0, streak: 0, bestStreak: 0 };
+            },
+
+            updateSessionStats: function(isCorrect) {
+                this.sessionStats.total += 1;
+                if (isCorrect) {
+                    this.sessionStats.correct += 1;
+                    this.sessionStats.streak += 1;
+                    this.sessionStats.bestStreak = Math.max(this.sessionStats.bestStreak, this.sessionStats.streak);
+                } else {
+                    this.sessionStats.wrong += 1;
+                    this.sessionStats.streak = 0;
+                }
+            },
+
+            shuffleQuestions: function(list) {
+                const copy = [...(list || [])];
+                for (let i = copy.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [copy[i], copy[j]] = [copy[j], copy[i]];
+                }
+                return copy;
+            },
+
             renderQuestion: function() {
-                const track = this.data[this.state.currentTrack];
+                const track = this.state.mode === 'practice' ? this.practiceSession.items : this.storySession.items;
                 if (!track || track.length === 0) {
                     this.showLoadError('문제 로딩 실패');
                     this.goHome();
                     return;
                 }
 
-                const q = track[this.state.currentStep];
+                const q = this.state.mode === 'practice' ? track[this.practiceSession.index] : track[this.state.currentStep];
                 if (!q) {
                     this.showCompleteScreen();
                     return;
@@ -982,8 +1290,9 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             },
 
             checkAnswer: function() {
-                const track = this.data[this.state.currentTrack];
-                const q = track ? track[this.state.currentStep] : null;
+                const trackList = this.state.mode === 'practice' ? this.practiceSession.items : this.storySession.items;
+                const index = this.state.mode === 'practice' ? this.practiceSession.index : this.state.currentStep;
+                const q = trackList ? trackList[index] : null;
                 if (!q) {
                     this.showLoadError('문제 로딩 실패');
                     this.goHome();
@@ -991,6 +1300,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 }
                 let isCorrect = false;
                 let correctText = "";
+                const trackKey = this.state.mode === 'practice' ? q.practiceTrack : this.state.currentTrack;
 
                 if (q.type === 'mcq' || q.type === 'select_concept') {
                     const options = q.choices || q.options || [];
@@ -1002,6 +1312,8 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     isCorrect = (attempt === truth);
                     correctText = q.correctOrder.join(' ');
                 }
+                this.updateSessionStats(isCorrect);
+                this.recordPerformance(trackKey, q.id, isCorrect);
                 this.showFeedback(isCorrect, correctText);
             },
 
@@ -1046,7 +1358,17 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             },
 
             nextQuestion: function() {
-                const track = this.data[this.state.currentTrack];
+                if (this.state.mode === 'practice') {
+                    this.practiceSession.index++;
+                    if (this.practiceSession.index >= this.practiceSession.items.length) {
+                        this.showCompleteScreen();
+                    } else {
+                        this.renderQuestion();
+                    }
+                    return;
+                }
+
+                const track = this.storySession.items;
                 this.state.currentStep++;
                 if (this.state.currentStep >= track.length) {
                     this.showCompleteScreen();
@@ -1060,6 +1382,24 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 document.getElementById('bottom-bar').classList.add('hidden');
                 document.getElementById('result-view').classList.remove('hidden');
                 document.getElementById('app-root').appendChild(document.getElementById('result-view'));
+                const title = document.querySelector('#result-view h2');
+                const subtitle = document.querySelector('#result-view p');
+                if (this.state.mode === 'practice') {
+                    title.innerText = 'Practice 세션 완료!';
+                    subtitle.innerText = '약점을 공략하며 실력을 올렸어요.';
+                } else {
+                    title.innerText = 'Track Completed!';
+                    subtitle.innerText = '성공적으로 Query를 수행했습니다.';
+                }
+                const accuracy = this.sessionStats.total ? Math.round((this.sessionStats.correct / this.sessionStats.total) * 100) : 0;
+                const xp = this.sessionStats.correct * 10;
+                const streakText = this.sessionStats.bestStreak > 1
+                    ? `${this.sessionStats.bestStreak}문제 연속 정답! 흐름을 이어가 보세요.`
+                    : '다음에는 더 긴 연속 정답에 도전해보세요.';
+
+                document.getElementById('result-xp').innerText = `+${xp}`;
+                document.getElementById('result-accuracy').innerText = `${accuracy}%`;
+                document.getElementById('result-streak').innerText = streakText;
                 SoundManager.playCorrect();
             }
         };
