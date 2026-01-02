@@ -614,6 +614,18 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     if (e.key === 'Escape') this.closeModal();
                 });
                 this.renderTracks();
+                this.preloadTrackCounts();
+            },
+
+            preloadTrackCounts: async function() {
+                await Promise.allSettled(TRACK_CONFIG.map(async (track) => {
+                    try {
+                        await this.loadTrackData(track.key);
+                    } catch (error) {
+                        console.error(`Track preload failed for ${track.key}`, error);
+                    }
+                }));
+                this.renderTracks();
             },
 
             // --- Database / API Fetch Simulation ---
@@ -634,6 +646,23 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 const lower = (track || '').toString().toLowerCase();
                 const exists = TRACK_CONFIG.some(t => t.key === lower);
                 return exists ? lower : null;
+            },
+
+            loadTrackData: async function(track) {
+                const normalizedTrack = this.normalizeTrack(track);
+                if (!normalizedTrack) {
+                    throw new Error('Invalid track');
+                }
+
+                if (Array.isArray(this.data[normalizedTrack]) && this.data[normalizedTrack].length > 0) {
+                    this.trackMeta[normalizedTrack] = { count: this.data[normalizedTrack].length };
+                    return this.data[normalizedTrack];
+                }
+
+                const questions = await this.fetchTrackQuestions(normalizedTrack);
+                this.data[normalizedTrack] = questions;
+                this.trackMeta[normalizedTrack] = { count: questions.length };
+                return questions;
             },
 
             resolveBasePath: function() {
@@ -747,7 +776,8 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 grid.innerHTML = '';
 
                 TRACK_CONFIG.forEach(track => {
-                    const count = (this.data[track.key] || []).length || (this.trackMeta[track.key]?.count || 0);
+                    const resolvedCount = this.trackMeta[track.key]?.count ?? this.data[track.key]?.length;
+                    const countLabel = Number.isFinite(resolvedCount) ? resolvedCount : '...';
                     const card = document.createElement('div');
                     card.className = "option-card rounded-2xl p-6 flex flex-col items-center gap-4 bg-white hover:bg-gray-50 transition-all transform hover:scale-105";
                     card.onclick = () => this.startLesson(track.key);
@@ -758,7 +788,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                         <div class="w-16 h-16">${iconSVG}</div>
                         <div class="text-center">
                             <span class="block font-extrabold text-gray-700 text-lg">${track.label}</span>
-                            <span class="block text-xs text-gray-400 font-bold uppercase">${count} Lessons</span>
+                            <span class="block text-xs text-gray-400 font-bold uppercase">${countLabel} Lessons</span>
                         </div>
                     `;
                     grid.appendChild(card);
@@ -788,8 +818,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 
                 try {
                     this.clearLoadError();
-                    const questions = await this.fetchTrackQuestions(normalized);
-                    this.data[normalized] = questions;
+                    const questions = await this.loadTrackData(normalized);
                     this.state.currentTrack = normalized;
                     localStorage.setItem('currentTrack', normalized);
 
