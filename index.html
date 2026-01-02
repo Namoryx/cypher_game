@@ -415,11 +415,11 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 <div class="flex gap-4 mt-4 w-full justify-center">
 <div class="w-32 bg-[#FFC800] rounded-2xl p-4 text-white shadow-lg btn-3d border-[#E59400]">
 <div class="text-xs font-bold opacity-90 uppercase">Graph XP</div>
-<div class="text-3xl font-extrabold">+50</div>
+<div class="text-3xl font-extrabold" id="result-xp">+0</div>
 </div>
 <div class="w-32 bg-[#0066CC] rounded-2xl p-4 text-white shadow-lg btn-3d border-[#004C99]">
 <div class="text-xs font-bold opacity-90 uppercase">Accuracy</div>
-<div class="text-3xl font-extrabold">100%</div>
+<div class="text-3xl font-extrabold" id="result-accuracy">0%</div>
 </div>
 </div>
 <div class="mt-8 p-4 bg-gray-100 rounded-xl w-full max-w-md">
@@ -428,7 +428,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     Streak
                 </div>
 <div class="text-left text-sm text-gray-600">
-                    3일 연속 학습 중입니다! 내일도 접속해서 그래프 마스터가 되세요.
+                    <span id="result-streak">오늘의 연속 정답 기록을 확인해보세요.</span>
                 </div>
 </div>
 <button class="btn-3d btn-green w-full md:w-80 py-3 rounded-xl text-lg font-bold tracking-wide uppercase mt-12" onclick="window.location.reload()">
@@ -601,6 +601,13 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             practiceSession: {
                 items: [],
                 index: 0
+            },
+            sessionStats: {
+                total: 0,
+                correct: 0,
+                wrong: 0,
+                streak: 0,
+                bestStreak: 0
             },
 
             state: {
@@ -878,6 +885,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             // --- Navigation ---
             startFlow: function() {
                 this.state.mode = 'story';
+                this.resetSessionStats();
                 document.getElementById('landing-view').classList.add('hidden');
                 document.getElementById('track-view').classList.remove('hidden');
                 this.updateModeBadge();
@@ -885,6 +893,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 
             startPracticeFlow: async function() {
                 this.state.mode = 'practice';
+                this.resetSessionStats();
                 document.getElementById('landing-view').classList.add('hidden');
                 document.getElementById('track-view').classList.add('hidden');
                 document.getElementById('main-header').classList.add('hidden');
@@ -935,6 +944,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 
                 try {
                     this.state.mode = 'story';
+                    this.resetSessionStats();
                     this.clearLoadError();
                     const questions = await this.loadTrackData(normalized);
                     this.state.currentTrack = normalized;
@@ -974,6 +984,22 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 const currentIndex = this.state.mode === 'practice' ? this.practiceSession.index : this.state.currentStep;
                 const pct = track.length ? (currentIndex / track.length) * 100 : 0;
                 document.getElementById('progress-bar').style.width = `${pct}%`;
+            },
+
+            resetSessionStats: function() {
+                this.sessionStats = { total: 0, correct: 0, wrong: 0, streak: 0, bestStreak: 0 };
+            },
+
+            updateSessionStats: function(isCorrect) {
+                this.sessionStats.total += 1;
+                if (isCorrect) {
+                    this.sessionStats.correct += 1;
+                    this.sessionStats.streak += 1;
+                    this.sessionStats.bestStreak = Math.max(this.sessionStats.bestStreak, this.sessionStats.streak);
+                } else {
+                    this.sessionStats.wrong += 1;
+                    this.sessionStats.streak = 0;
+                }
             },
 
             renderQuestion: function() {
@@ -1152,6 +1178,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     isCorrect = (attempt === truth);
                     correctText = q.correctOrder.join(' ');
                 }
+                this.updateSessionStats(isCorrect);
                 this.recordPerformance(trackKey, q.id, isCorrect);
                 this.showFeedback(isCorrect, correctText);
             },
@@ -1230,6 +1257,15 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     title.innerText = 'Track Completed!';
                     subtitle.innerText = '성공적으로 Query를 수행했습니다.';
                 }
+                const accuracy = this.sessionStats.total ? Math.round((this.sessionStats.correct / this.sessionStats.total) * 100) : 0;
+                const xp = this.sessionStats.correct * 10;
+                const streakText = this.sessionStats.bestStreak > 1
+                    ? `${this.sessionStats.bestStreak}문제 연속 정답! 흐름을 이어가 보세요.`
+                    : '다음에는 더 긴 연속 정답에 도전해보세요.';
+
+                document.getElementById('result-xp').innerText = `+${xp}`;
+                document.getElementById('result-accuracy').innerText = `${accuracy}%`;
+                document.getElementById('result-streak').innerText = streakText;
                 SoundManager.playCorrect();
             }
         };
