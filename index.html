@@ -537,37 +537,53 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             correctSynth: null,
             wrongSynth: null,
             volumeNode: null,
-            
+            correctSpace: null,
+
             init: function() {
-                this.volumeNode = new Tone.Gain(0.4).toDestination();
-                this.correctSynth = new Tone.PolySynth(Tone.Synth, {
-                    oscillator: { type: "triangle" },
-                    envelope: { attack: 0.02, decay: 0.1, sustain: 0.1, release: 2.0 } 
+                this.volumeNode = new Tone.Gain(0.28).toDestination();
+
+                this.correctSpace = new Tone.Reverb({
+                    decay: 1.2,
+                    wet: 0.15,
+                    preDelay: 0.02
                 }).connect(this.volumeNode);
-                this.wrongSynth = new Tone.Synth({
-                    oscillator: { type: "sawtooth" },
-                    envelope: { attack: 0.05, decay: 0.2, sustain: 0.2, release: 1.0 }
+
+                this.correctSynth = new Tone.AMSynth({
+                    oscillator: { type: "sine" },
+                    harmonicity: 2,
+                    detune: 4,
+                    envelope: { attack: 0.01, decay: 0.2, sustain: 0.15, release: 0.7 }
+                }).connect(this.correctSpace);
+
+                const mellowFilter = new Tone.Filter({
+                    type: "lowpass",
+                    frequency: 180,
+                    rolloff: -24,
+                    Q: 0.8
                 }).connect(this.volumeNode);
+
+                this.wrongSynth = new Tone.MembraneSynth({
+                    pitchDecay: 0.008,
+                    octaves: 1.2,
+                    oscillator: { type: "sine" },
+                    envelope: { attack: 0.005, decay: 0.35, sustain: 0, release: 0.25 }
+                }).connect(mellowFilter);
             },
             playCorrect: function() {
                 try {
-                    if(Tone.context.state !== 'running') Tone.start();
-                    this.correctSynth.releaseAll();
+                    if (Tone.context.state !== 'running') Tone.start();
                     const now = Tone.now();
-                    this.correctSynth.triggerAttackRelease("C5", "8n", now);
-                    this.correctSynth.triggerAttackRelease("E5", "8n", now + 0.05);
-                    this.correctSynth.triggerAttackRelease("G5", "8n", now + 0.10);
-                    this.correctSynth.triggerAttackRelease("C6", "2n", now + 0.15); 
+                    this.correctSynth.triggerAttackRelease("A5", 0.25, now);
+                    this.correctSynth.triggerAttackRelease("E6", 0.2, now + 0.08);
+                    this.correctSynth.triggerAttackRelease("B5", 0.3, now + 0.16);
                 } catch(e) { console.warn("Audio blocked", e); }
             },
             playWrong: function() {
                 try {
-                    if(Tone.context.state !== 'running') Tone.start();
-                    this.wrongSynth.triggerRelease();
+                    if (Tone.context.state !== 'running') Tone.start();
                     const now = Tone.now();
-                    this.wrongSynth.triggerAttackRelease("G3", "8n", now);
-                    this.wrongSynth.triggerAttackRelease("F#3", "8n", now + 0.2);
-                    this.wrongSynth.triggerAttackRelease("C3", "2n", now + 0.4); 
+                    this.wrongSynth.triggerAttackRelease("D2", 0.45, now);
+                    this.wrongSynth.triggerAttackRelease("A1", 0.3, now + 0.12);
                 } catch(e) { console.warn("Audio blocked", e); }
             }
         };
