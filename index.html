@@ -640,12 +640,8 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 let metaBase = null;
 
                 const metaEnv = (typeof globalThis !== 'undefined' && globalThis.__import_meta_env__)
-                    || (typeof window !== 'undefined' && window.__import_meta_env__)
-                    || null;
-
-                if (metaEnv && metaEnv.BASE_URL) {
-                    metaBase = metaEnv.BASE_URL;
-                }
+                    || (typeof window !== 'undefined' && window.__import_meta_env__);
+                metaBase = metaEnv?.BASE_URL || null;
 
                 const pathBase = (window.location && window.location.pathname) ? window.location.pathname.replace(/[^/]*$/, '') : '/';
                 const fallbackBase = (window.__BASE_URL || pathBase || '/');
