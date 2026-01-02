@@ -602,6 +602,9 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 items: [],
                 index: 0
             },
+            storySession: {
+                items: []
+            },
             sessionStats: {
                 total: 0,
                 correct: 0,
@@ -947,6 +950,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     this.resetSessionStats();
                     this.clearLoadError();
                     const questions = await this.loadTrackData(normalized);
+                    this.storySession.items = this.shuffleQuestions(questions);
                     this.state.currentTrack = normalized;
                     localStorage.setItem('currentTrack', normalized);
 
@@ -980,7 +984,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 
             updateLives: function() { document.getElementById('lives-count').innerText = this.state.lives; },
             updateProgress: function() {
-                const track = this.state.mode === 'practice' ? this.practiceSession.items : (this.data[this.state.currentTrack] || []);
+                const track = this.state.mode === 'practice' ? this.practiceSession.items : (this.storySession.items || []);
                 const currentIndex = this.state.mode === 'practice' ? this.practiceSession.index : this.state.currentStep;
                 const pct = track.length ? (currentIndex / track.length) * 100 : 0;
                 document.getElementById('progress-bar').style.width = `${pct}%`;
@@ -1002,8 +1006,17 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 }
             },
 
+            shuffleQuestions: function(list) {
+                const copy = [...(list || [])];
+                for (let i = copy.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [copy[i], copy[j]] = [copy[j], copy[i]];
+                }
+                return copy;
+            },
+
             renderQuestion: function() {
-                const track = this.state.mode === 'practice' ? this.practiceSession.items : this.data[this.state.currentTrack];
+                const track = this.state.mode === 'practice' ? this.practiceSession.items : this.storySession.items;
                 if (!track || track.length === 0) {
                     this.showLoadError('문제 로딩 실패');
                     this.goHome();
@@ -1156,7 +1169,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             },
 
             checkAnswer: function() {
-                const trackList = this.state.mode === 'practice' ? this.practiceSession.items : this.data[this.state.currentTrack];
+                const trackList = this.state.mode === 'practice' ? this.practiceSession.items : this.storySession.items;
                 const index = this.state.mode === 'practice' ? this.practiceSession.index : this.state.currentStep;
                 const q = trackList ? trackList[index] : null;
                 if (!q) {
@@ -1234,7 +1247,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     return;
                 }
 
-                const track = this.data[this.state.currentTrack];
+                const track = this.storySession.items;
                 this.state.currentStep++;
                 if (this.state.currentStep >= track.length) {
                     this.showCompleteScreen();
