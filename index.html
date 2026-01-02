@@ -181,6 +181,10 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 <span class="material-symbols-outlined text-lg">terminal</span>
                 Cypher Playground
             </button>
+<button aria-label="설정" class="flex items-center gap-2 btn-3d btn-outline px-3 py-1.5 rounded-xl text-xs font-bold uppercase hover:bg-gray-50 text-gray-500 border-gray-300" onclick="app.openSettings()">
+<span class="material-symbols-outlined text-base">settings</span>
+<span class="hidden md:inline">설정</span>
+</button>
 <button class="flex items-center gap-2 btn-3d btn-outline px-3 py-1.5 rounded-xl text-xs font-bold uppercase hover:bg-gray-50 text-gray-500 border-gray-300" onclick="downloadHTML()">
 <span class="material-symbols-outlined text-base">download</span>
 <span class="hidden md:inline">HTML 저장</span>
@@ -326,6 +330,9 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 <div class="absolute top-1 left-2 right-2 h-1 bg-white/20 rounded-full z-10"></div>
 <div class="progress-fill h-full bg-[#58CC02] rounded-full w-0" id="progress-bar" style="width: 0%;"></div>
 </div>
+<button aria-label="설정" class="text-gray-400 hover:text-gray-600 transition p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300" onclick="app.openSettings()">
+<span class="material-symbols-outlined text-3xl">settings</span>
+</button>
 <!-- Lives -->
 <div class="flex items-center gap-1 text-[#FF4B4B] shrink-0">
 <span class="material-symbols-outlined text-3xl filled">favorite</span>
@@ -436,6 +443,32 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             </button>
 </div>
 </main>
+<!-- ================= MODAL (Settings) ================= -->
+<div aria-modal="true" class="fixed inset-0 z-[60] flex items-center justify-center modal-backdrop fade-in hidden" id="settings-modal" onclick="app.handleSettingsModal(event)" role="dialog">
+<div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 w-full max-w-md m-4 flex flex-col gap-4 transform scale-100 transition-transform" role="document">
+<div class="flex items-center justify-between w-full">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#0066CC]">settings</span>
+<h3 class="text-xl font-extrabold text-gray-800">설정</h3>
+</div>
+<button aria-label="설정 닫기" class="text-gray-400 hover:text-gray-600 transition p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300" onclick="app.closeSettings()">
+<span class="material-symbols-outlined text-2xl">close</span>
+</button>
+</div>
+<div class="w-full">
+<div class="flex items-center justify-between text-sm font-bold text-gray-600 mb-2">
+<span>사운드 볼륨</span>
+<span class="text-[#0066CC]" id="volume-value">--%</span>
+</div>
+<input aria-label="사운드 볼륨" class="w-full accent-[#0066CC] cursor-pointer" id="volume-slider" max="1" min="0.1" step="0.01" type="range" value="0.38">
+<div class="flex justify-between text-[11px] text-gray-400 font-bold mt-1">
+<span>조용하게</span>
+<span>또렷하게</span>
+</div>
+</div>
+<p class="text-xs text-gray-500 leading-relaxed">정답/오답 효과음에 공통 적용됩니다. 원하는 크기로 바로 조절해보세요.</p>
+</div>
+</div>
 <!-- ================= MODAL (Quit Confirmation) ================= -->
 <div aria-modal="true" class="fixed inset-0 z-[60] flex items-center justify-center modal-backdrop fade-in hidden" id="quit-modal" onclick="app.handleModalClick(event)" role="dialog">
 <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 w-full max-w-sm m-4 flex flex-col items-center text-center transform scale-100 transition-transform">
@@ -538,9 +571,14 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             wrongSynth: null,
             volumeNode: null,
             correctSpace: null,
+            volume: 0.38,
+            minVolume: 0.1,
+            maxVolume: 1,
+            storageKey: 'soundVolume',
 
             init: function() {
-                this.volumeNode = new Tone.Gain(0.28).toDestination();
+                this.volume = this.loadVolumePreference();
+                this.volumeNode = new Tone.Gain(this.volume).toDestination();
 
                 this.correctSpace = new Tone.Reverb({
                     decay: 1.2,
@@ -568,6 +606,25 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     oscillator: { type: "sine" },
                     envelope: { attack: 0.005, decay: 0.35, sustain: 0, release: 0.25 }
                 }).connect(mellowFilter);
+            },
+            loadVolumePreference: function() {
+                const stored = parseFloat(localStorage.getItem(this.storageKey));
+                const fallback = this.volume;
+                if (!Number.isFinite(stored)) return fallback;
+                return Math.min(this.maxVolume, Math.max(this.minVolume, stored));
+            },
+            setVolume: function(value, { persist = true } = {}) {
+                const clamped = Math.min(this.maxVolume, Math.max(this.minVolume, value || 0));
+                this.volume = clamped;
+                if (this.volumeNode) {
+                    this.volumeNode.gain.rampTo(clamped, 0.05);
+                }
+                if (persist) {
+                    localStorage.setItem(this.storageKey, clamped);
+                }
+            },
+            getVolume: function() {
+                return this.volume;
             },
             playCorrect: function() {
                 try {
@@ -644,6 +701,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 this.loadPerformance();
 
                 SoundManager.init();
+                this.setupVolumeUI();
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape') this.closeModal();
                 });
@@ -662,8 +720,41 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 this.renderTracks();
             },
 
+            setupVolumeUI: function() {
+                const slider = document.getElementById('volume-slider');
+                const valueEl = document.getElementById('volume-value');
+                if (!slider || !valueEl) return;
+
+                slider.min = SoundManager.minVolume;
+                slider.max = SoundManager.maxVolume;
+                slider.step = 0.01;
+
+                this.syncVolumeSlider();
+
+                slider.addEventListener('input', (e) => {
+                    const vol = parseFloat(e.target.value);
+                    if (!Number.isFinite(vol)) return;
+                    SoundManager.setVolume(vol);
+                    this.updateVolumeLabel(vol);
+                });
+            },
+            syncVolumeSlider: function() {
+                const slider = document.getElementById('volume-slider');
+                const valueEl = document.getElementById('volume-value');
+                if (!slider || !valueEl) return;
+                const current = SoundManager.getVolume();
+                slider.value = current;
+                this.updateVolumeLabel(current);
+            },
+            updateVolumeLabel: function(volume) {
+                const valueEl = document.getElementById('volume-value');
+                if (!valueEl) return;
+                const pct = Math.round((volume || 0) * 100);
+                valueEl.textContent = `${pct}%`;
+            },
+
             // --- Database / API Fetch Simulation ---
-            /* 
+            /*
                Future Integration Point:
                async fetchQuestions() {
                    const response = await fetch('/api/questions');
@@ -997,6 +1088,20 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 Tone.Transport.stop();
             },
             handleModalClick: function(e) { if (e.target.id === 'quit-modal') this.closeModal(); },
+
+            openSettings: function() {
+                const modal = document.getElementById('settings-modal');
+                if (!modal) return;
+                modal.classList.remove('hidden');
+                this.syncVolumeSlider();
+            },
+            closeSettings: function() {
+                const modal = document.getElementById('settings-modal');
+                if (!modal) return;
+                modal.classList.add('hidden');
+            },
+            handleSettingsModal: function(e) { if (e.target.id === "settings-modal") this.closeSettings(); },
+
 
             updateLives: function() { document.getElementById('lives-count').innerText = this.state.lives; },
             updateProgress: function() {
