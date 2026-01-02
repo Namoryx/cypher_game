@@ -237,12 +237,12 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 <button class="btn-3d btn-green w-full md:w-80 py-3 rounded-xl text-lg font-bold tracking-wide uppercase" onclick="app.startFlow()">
                         Story 모드 시작하기
                     </button>
-<button class="btn-3d btn-outline w-full md:w-80 py-3 rounded-xl text-lg font-bold tracking-wide uppercase">
+<button class="btn-3d btn-outline w-full md:w-80 py-3 rounded-xl text-lg font-bold tracking-wide uppercase" onclick="app.startPracticeFlow()">
                         Practice 모드 (약점 공략)
                     </button>
-</div>
-</div>
-</div>
+                </div>
+            </div>
+        </div>
 <!-- === VIEW 2: TRACK SELECTION === -->
     <div class="w-full max-w-5xl px-4 py-10 flex flex-col items-center fade-in hidden" id="track-view">
 <h3 class="text-2xl font-bold text-gray-700 mb-2">학습할 Track을 선택하세요</h3>
@@ -320,6 +320,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 <button aria-label="학습 종료" class="text-gray-400 hover:text-gray-600 transition p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300" onclick="app.requestQuit()">
 <span class="material-symbols-outlined text-3xl">close</span>
 </button>
+<span class="px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wide bg-gray-100 text-gray-600" id="mode-badge">Story</span>
 <!-- Progress Bar -->
 <div class="flex-grow h-4 bg-gray-200 rounded-full overflow-hidden relative mx-2">
 <div class="absolute top-1 left-2 right-2 h-1 bg-white/20 rounded-full z-10"></div>
@@ -414,11 +415,11 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 <div class="flex gap-4 mt-4 w-full justify-center">
 <div class="w-32 bg-[#FFC800] rounded-2xl p-4 text-white shadow-lg btn-3d border-[#E59400]">
 <div class="text-xs font-bold opacity-90 uppercase">Graph XP</div>
-<div class="text-3xl font-extrabold">+50</div>
+<div class="text-3xl font-extrabold" id="result-xp">+0</div>
 </div>
 <div class="w-32 bg-[#0066CC] rounded-2xl p-4 text-white shadow-lg btn-3d border-[#004C99]">
 <div class="text-xs font-bold opacity-90 uppercase">Accuracy</div>
-<div class="text-3xl font-extrabold">100%</div>
+<div class="text-3xl font-extrabold" id="result-accuracy">0%</div>
 </div>
 </div>
 <div class="mt-8 p-4 bg-gray-100 rounded-xl w-full max-w-md">
@@ -427,7 +428,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     Streak
                 </div>
 <div class="text-left text-sm text-gray-600">
-                    3일 연속 학습 중입니다! 내일도 접속해서 그래프 마스터가 되세요.
+                    <span id="result-streak">오늘의 연속 정답 기록을 확인해보세요.</span>
                 </div>
 </div>
 <button class="btn-3d btn-green w-full md:w-80 py-3 rounded-xl text-lg font-bold tracking-wide uppercase mt-12" onclick="window.location.reload()">
@@ -596,9 +597,22 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
         const app = window.app = {
             data: {},
             trackMeta: {},
+            performance: {},
+            practiceSession: {
+                items: [],
+                index: 0
+            },
+            sessionStats: {
+                total: 0,
+                correct: 0,
+                wrong: 0,
+                streak: 0,
+                bestStreak: 0
+            },
 
             state: {
                 currentTrack: "core",
+                mode: 'story',
                 currentStep: 0,
                 lives: 5,
                 selectedOption: null,
@@ -608,11 +622,24 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 
             init: function() {
                 this.state.currentTrack = this.normalizeTrack(localStorage.getItem('currentTrack')) || 'core';
+                this.loadPerformance();
 
                 SoundManager.init();
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape') this.closeModal();
                 });
+                this.renderTracks();
+                this.preloadTrackCounts();
+            },
+
+            preloadTrackCounts: async function() {
+                await Promise.allSettled(TRACK_CONFIG.map(async (track) => {
+                    try {
+                        await this.loadTrackData(track.key);
+                    } catch (error) {
+                        console.error(`Track preload failed for ${track.key}`, error);
+                    }
+                }));
                 this.renderTracks();
             },
 
@@ -634,6 +661,23 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 const lower = (track || '').toString().toLowerCase();
                 const exists = TRACK_CONFIG.some(t => t.key === lower);
                 return exists ? lower : null;
+            },
+
+            loadTrackData: async function(track) {
+                const normalizedTrack = this.normalizeTrack(track);
+                if (!normalizedTrack) {
+                    throw new Error('Invalid track');
+                }
+
+                if (Array.isArray(this.data[normalizedTrack]) && this.data[normalizedTrack].length > 0) {
+                    this.trackMeta[normalizedTrack] = { count: this.data[normalizedTrack].length };
+                    return this.data[normalizedTrack];
+                }
+
+                const questions = await this.fetchTrackQuestions(normalizedTrack);
+                this.data[normalizedTrack] = questions;
+                this.trackMeta[normalizedTrack] = { count: questions.length };
+                return questions;
             },
 
             resolveBasePath: function() {
@@ -747,7 +791,8 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 grid.innerHTML = '';
 
                 TRACK_CONFIG.forEach(track => {
-                    const count = (this.data[track.key] || []).length || (this.trackMeta[track.key]?.count || 0);
+                    const resolvedCount = this.trackMeta[track.key]?.count ?? this.data[track.key]?.length;
+                    const countLabel = Number.isFinite(resolvedCount) ? resolvedCount : '...';
                     const card = document.createElement('div');
                     card.className = "option-card rounded-2xl p-6 flex flex-col items-center gap-4 bg-white hover:bg-gray-50 transition-all transform hover:scale-105";
                     card.onclick = () => this.startLesson(track.key);
@@ -758,17 +803,126 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                         <div class="w-16 h-16">${iconSVG}</div>
                         <div class="text-center">
                             <span class="block font-extrabold text-gray-700 text-lg">${track.label}</span>
-                            <span class="block text-xs text-gray-400 font-bold uppercase">${count} Lessons</span>
+                            <span class="block text-xs text-gray-400 font-bold uppercase">${countLabel} Lessons</span>
                         </div>
                     `;
                     grid.appendChild(card);
                 });
             },
 
+            updateModeBadge: function() {
+                const badge = document.getElementById('mode-badge');
+                if (!badge) return;
+                if (this.state.mode === 'practice') {
+                    badge.innerText = 'Practice';
+                    badge.classList.remove('bg-gray-100', 'text-gray-600');
+                    badge.classList.add('bg-[#FFE8C4]', 'text-[#E59400]');
+                } else {
+                    badge.innerText = 'Story';
+                    badge.classList.remove('bg-[#FFE8C4]', 'text-[#E59400]');
+                    badge.classList.add('bg-gray-100', 'text-gray-600');
+                }
+            },
+
+            loadPerformance: function() {
+                try {
+                    const raw = localStorage.getItem('performanceLog');
+                    this.performance = raw ? JSON.parse(raw) : {};
+                } catch (error) {
+                    console.warn('Failed to load performance log', error);
+                    this.performance = {};
+                }
+            },
+
+            savePerformance: function() {
+                try {
+                    localStorage.setItem('performanceLog', JSON.stringify(this.performance));
+                } catch (error) {
+                    console.warn('Failed to persist performance log', error);
+                }
+            },
+
+            recordPerformance: function(track, questionId, isCorrect) {
+                if (!track || !questionId) return;
+                const key = `${track}:${questionId}`;
+                const current = this.performance[key] || { track, correct: 0, wrong: 0 };
+                if (isCorrect) {
+                    current.correct = (current.correct || 0) + 1;
+                } else {
+                    current.wrong = (current.wrong || 0) + 1;
+                }
+                current.updatedAt = Date.now();
+                this.performance[key] = current;
+                this.savePerformance();
+            },
+
+            buildPracticeQueue: function() {
+                const queue = [];
+                const entries = Object.entries(this.performance || {});
+                entries.sort(([, a], [, b]) => {
+                    const scoreA = (a.wrong || 0) - (a.correct || 0);
+                    const scoreB = (b.wrong || 0) - (b.correct || 0);
+                    if (scoreA === scoreB) {
+                        return (b.updatedAt || 0) - (a.updatedAt || 0);
+                    }
+                    return scoreB - scoreA;
+                });
+
+                entries.forEach(([key, stats]) => {
+                    if ((stats.wrong || 0) === 0 || (stats.wrong || 0) <= (stats.correct || 0)) return;
+                    if (!stats.track) return;
+                    const trackKey = stats.track;
+                    const questions = this.data[trackKey] || [];
+                    const match = questions.find(q => q.id === key.replace(`${trackKey}:`, ''));
+                    if (match) {
+                        queue.push({ ...match, practiceTrack: trackKey });
+                    }
+                });
+
+                return queue;
+            },
+
             // --- Navigation ---
             startFlow: function() {
+                this.state.mode = 'story';
+                this.resetSessionStats();
                 document.getElementById('landing-view').classList.add('hidden');
                 document.getElementById('track-view').classList.remove('hidden');
+                this.updateModeBadge();
+            },
+
+            startPracticeFlow: async function() {
+                this.state.mode = 'practice';
+                this.resetSessionStats();
+                document.getElementById('landing-view').classList.add('hidden');
+                document.getElementById('track-view').classList.add('hidden');
+                document.getElementById('main-header').classList.add('hidden');
+                this.updateModeBadge();
+
+                try {
+                    await Promise.all(TRACK_CONFIG.map(track => this.loadTrackData(track.key)));
+                    const queue = this.buildPracticeQueue();
+                    if (queue.length === 0) {
+                        alert('연습할 오답이 아직 없습니다. 스토리 모드에서 문제를 풀어주세요.');
+                        this.goHome();
+                        this.state.mode = 'story';
+                        this.updateModeBadge();
+                        return;
+                    }
+                    this.practiceSession.items = queue;
+                    this.practiceSession.index = 0;
+                    this.state.lives = 5;
+                    this.updateLives();
+
+                    document.getElementById('lesson-view').classList.remove('hidden');
+                    this.renderQuestion();
+                } catch (error) {
+                    console.error('Practice mode failed', error);
+                    this.showLoadError('Practice 세션을 준비하지 못했습니다');
+                    this.goHome();
+                    this.state.mode = 'story';
+                    this.updateModeBadge();
+                }
             },
 
             goHome: function() {
@@ -776,6 +930,8 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 document.getElementById('main-header').classList.remove('hidden');
                 document.getElementById('track-view').classList.remove('hidden');
                 document.getElementById('landing-view').classList.add('hidden');
+                this.state.mode = 'story';
+                this.updateModeBadge();
             },
 
             startLesson: async function(trackName) {
@@ -787,9 +943,10 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 }
 
                 try {
+                    this.state.mode = 'story';
+                    this.resetSessionStats();
                     this.clearLoadError();
-                    const questions = await this.fetchTrackQuestions(normalized);
-                    this.data[normalized] = questions;
+                    const questions = await this.loadTrackData(normalized);
                     this.state.currentTrack = normalized;
                     localStorage.setItem('currentTrack', normalized);
 
@@ -823,20 +980,37 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 
             updateLives: function() { document.getElementById('lives-count').innerText = this.state.lives; },
             updateProgress: function() {
-                const track = this.data[this.state.currentTrack] || [];
-                const pct = track.length ? ((this.state.currentStep) / track.length) * 100 : 0;
+                const track = this.state.mode === 'practice' ? this.practiceSession.items : (this.data[this.state.currentTrack] || []);
+                const currentIndex = this.state.mode === 'practice' ? this.practiceSession.index : this.state.currentStep;
+                const pct = track.length ? (currentIndex / track.length) * 100 : 0;
                 document.getElementById('progress-bar').style.width = `${pct}%`;
             },
 
+            resetSessionStats: function() {
+                this.sessionStats = { total: 0, correct: 0, wrong: 0, streak: 0, bestStreak: 0 };
+            },
+
+            updateSessionStats: function(isCorrect) {
+                this.sessionStats.total += 1;
+                if (isCorrect) {
+                    this.sessionStats.correct += 1;
+                    this.sessionStats.streak += 1;
+                    this.sessionStats.bestStreak = Math.max(this.sessionStats.bestStreak, this.sessionStats.streak);
+                } else {
+                    this.sessionStats.wrong += 1;
+                    this.sessionStats.streak = 0;
+                }
+            },
+
             renderQuestion: function() {
-                const track = this.data[this.state.currentTrack];
+                const track = this.state.mode === 'practice' ? this.practiceSession.items : this.data[this.state.currentTrack];
                 if (!track || track.length === 0) {
                     this.showLoadError('문제 로딩 실패');
                     this.goHome();
                     return;
                 }
 
-                const q = track[this.state.currentStep];
+                const q = this.state.mode === 'practice' ? track[this.practiceSession.index] : track[this.state.currentStep];
                 if (!q) {
                     this.showCompleteScreen();
                     return;
@@ -982,8 +1156,9 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             },
 
             checkAnswer: function() {
-                const track = this.data[this.state.currentTrack];
-                const q = track ? track[this.state.currentStep] : null;
+                const trackList = this.state.mode === 'practice' ? this.practiceSession.items : this.data[this.state.currentTrack];
+                const index = this.state.mode === 'practice' ? this.practiceSession.index : this.state.currentStep;
+                const q = trackList ? trackList[index] : null;
                 if (!q) {
                     this.showLoadError('문제 로딩 실패');
                     this.goHome();
@@ -991,6 +1166,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 }
                 let isCorrect = false;
                 let correctText = "";
+                const trackKey = this.state.mode === 'practice' ? q.practiceTrack : this.state.currentTrack;
 
                 if (q.type === 'mcq' || q.type === 'select_concept') {
                     const options = q.choices || q.options || [];
@@ -1002,6 +1178,8 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     isCorrect = (attempt === truth);
                     correctText = q.correctOrder.join(' ');
                 }
+                this.updateSessionStats(isCorrect);
+                this.recordPerformance(trackKey, q.id, isCorrect);
                 this.showFeedback(isCorrect, correctText);
             },
 
@@ -1046,6 +1224,16 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             },
 
             nextQuestion: function() {
+                if (this.state.mode === 'practice') {
+                    this.practiceSession.index++;
+                    if (this.practiceSession.index >= this.practiceSession.items.length) {
+                        this.showCompleteScreen();
+                    } else {
+                        this.renderQuestion();
+                    }
+                    return;
+                }
+
                 const track = this.data[this.state.currentTrack];
                 this.state.currentStep++;
                 if (this.state.currentStep >= track.length) {
@@ -1060,6 +1248,24 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 document.getElementById('bottom-bar').classList.add('hidden');
                 document.getElementById('result-view').classList.remove('hidden');
                 document.getElementById('app-root').appendChild(document.getElementById('result-view'));
+                const title = document.querySelector('#result-view h2');
+                const subtitle = document.querySelector('#result-view p');
+                if (this.state.mode === 'practice') {
+                    title.innerText = 'Practice 세션 완료!';
+                    subtitle.innerText = '약점을 공략하며 실력을 올렸어요.';
+                } else {
+                    title.innerText = 'Track Completed!';
+                    subtitle.innerText = '성공적으로 Query를 수행했습니다.';
+                }
+                const accuracy = this.sessionStats.total ? Math.round((this.sessionStats.correct / this.sessionStats.total) * 100) : 0;
+                const xp = this.sessionStats.correct * 10;
+                const streakText = this.sessionStats.bestStreak > 1
+                    ? `${this.sessionStats.bestStreak}문제 연속 정답! 흐름을 이어가 보세요.`
+                    : '다음에는 더 긴 연속 정답에 도전해보세요.';
+
+                document.getElementById('result-xp').innerText = `+${xp}`;
+                document.getElementById('result-accuracy').innerText = `${accuracy}%`;
+                document.getElementById('result-streak').innerText = streakText;
                 SoundManager.playCorrect();
             }
         };
