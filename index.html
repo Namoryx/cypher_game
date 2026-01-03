@@ -787,10 +787,10 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 return { normalized, styleDef };
             },
 
-            playPreview: function(styleKey, { sample = 'correct' } = {}) {
+            playPreview: async function(styleKey, { sample = 'correct' } = {}) {
                 try {
                     if (!this.volumeNode) return;
-                    if (Tone.context.state !== 'running') Tone.start();
+                    await this.ensureAudioReady();
 
                     const { normalized, styleDef } = this.getStyleDefinition(styleKey);
                     if (!styleDef) return;
@@ -827,6 +827,12 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 
             dbToLinear: function(db) {
                 return Math.pow(10, db / 20);
+            },
+
+            ensureAudioReady: async function() {
+                if (Tone.context.state !== 'running') {
+                    await Tone.start();
+                }
             },
 
             computeRmsDb: function(audioBuffer) {
@@ -979,21 +985,21 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 this.correctGain = chain.correctGain || null;
                 this.wrongGain = chain.wrongGain || null;
             },
-            playCorrect: function() {
+            playCorrect: async function() {
                 try {
                     this.stopPreview();
                     if (!this.correctSynth) this.buildSynths();
-                    if (Tone.context.state !== 'running') Tone.start();
+                    await this.ensureAudioReady();
                     const now = Tone.now();
                     const { styleDef } = this.getStyleDefinition();
                     styleDef.playCorrectPattern(styleDef.getCorrectSound(this.correctSynth), now);
                 } catch(e) { console.warn("Audio blocked", e); }
             },
-            playWrong: function() {
+            playWrong: async function() {
                 try {
                     this.stopPreview();
                     if (!this.wrongSynth) this.buildSynths();
-                    if (Tone.context.state !== 'running') Tone.start();
+                    await this.ensureAudioReady();
                     const now = Tone.now();
                     const { styleDef } = this.getStyleDefinition();
                     styleDef.playWrongPattern(styleDef.getWrongSound(this.wrongSynth), now);
