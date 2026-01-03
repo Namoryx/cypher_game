@@ -700,19 +700,6 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                         if (!synth) return;
                         synth.triggerAttackRelease("D2", 0.45, now);
                         synth.triggerAttackRelease("A1", 0.3, now + 0.12);
-                    },
-                    buildPreview: (volumeNode) => {
-                        const previewGain = new Tone.Gain(0.9).connect(volumeNode);
-                        const previewSynth = new Tone.PolySynth(Tone.Synth, {
-                            oscillator: { type: 'sine' },
-                            envelope: { attack: 0.01, decay: 0.2, sustain: 0.3, release: 0.4 }
-                        }).connect(previewGain);
-                        return { previewSynth, previewGain };
-                    },
-                    playPreviewPattern: ({ previewSynth }, now) => {
-                        if (!previewSynth) return;
-                        previewSynth.triggerAttackRelease(["C5", "E5"], 0.35, now);
-                        previewSynth.triggerAttackRelease(["G5"], 0.35, now + 0.3);
                     }
                 },
                 B: {
@@ -802,8 +789,8 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     if (!this.volumeNode) return;
                     if (Tone.context.state !== 'running') Tone.start();
 
-                    const normalized = this.soundStyles[styleKey] ? styleKey : 'A';
-                    const styleDef = this.soundStyles[normalized] || this.soundStyles.A;
+                    const normalized = this.normalizeStyle(styleKey);
+                    const styleDef = this.getStyleDef(normalized);
                     if (!styleDef) return;
 
                     if (normalized !== this.style) {
@@ -816,13 +803,12 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 
                     this.stopPreview();
                     const now = Tone.now();
-                    const previewChain = this.previewChains?.[normalized];
-                    if (previewChain && typeof styleDef.playPreviewPattern === 'function') {
-                        styleDef.playPreviewPattern(previewChain, now);
-                    } else if (sample === 'wrong') {
-                        styleDef.playWrongPattern(this.wrongSynth, now);
-                    } else {
-                        styleDef.playCorrectPattern(this.correctSynth, now);
+                    const playCorrect = this.getCorrectSound(normalized);
+                    const playWrong = this.getWrongSound(normalized);
+                    if (sample === 'wrong' && typeof playWrong === 'function') {
+                        playWrong(this.wrongSynth, now);
+                    } else if (sample !== 'wrong' && typeof playCorrect === 'function') {
+                        playCorrect(this.correctSynth, now);
                     }
                     this.activePreviewStyle = normalized;
                     this.previewTimeout = setTimeout(() => this.stopPreview(), 1200);
@@ -840,7 +826,6 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 this.style = this.loadStylePreference();
                 this.volumeNode = new Tone.Gain(this.volume).toDestination();
                 this.buildSynths();
-                this.buildPreviewChains();
             },
             loadVolumePreference: function() {
                 const stored = parseFloat(localStorage.getItem(this.storageKey));
@@ -864,7 +849,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 }
             },
             setStyle: function(styleKey, { persist = true } = {}) {
-                const normalized = this.soundStyles[styleKey] ? styleKey : 'A';
+                const normalized = this.normalizeStyle(styleKey);
                 if (normalized !== this.style) {
                     this.style = normalized;
                     this.buildSynths();
@@ -872,6 +857,21 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 if (persist) {
                     localStorage.setItem(this.styleStorageKey, normalized);
                 }
+            },
+            normalizeStyle: function(styleKey) {
+                return this.soundStyles[styleKey] ? styleKey : 'A';
+            },
+            getStyleDef: function(styleKey) {
+                const normalized = this.normalizeStyle(styleKey);
+                return this.soundStyles[normalized];
+            },
+            getCorrectSound: function(styleKey = this.style) {
+                const styleDef = this.getStyleDef(styleKey);
+                return styleDef?.playCorrectPattern;
+            },
+            getWrongSound: function(styleKey = this.style) {
+                const styleDef = this.getStyleDef(styleKey);
+                return styleDef?.playWrongPattern;
             },
             getVolume: function() {
                 return this.volume;
@@ -903,8 +903,10 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     if (!this.correctSynth) this.buildSynths();
                     if (Tone.context.state !== 'running') Tone.start();
                     const now = Tone.now();
-                    const styleDef = this.soundStyles[this.style] || this.soundStyles.A;
-                    styleDef.playCorrectPattern(this.correctSynth, now);
+                    const playCorrect = this.getCorrectSound();
+                    if (typeof playCorrect === 'function') {
+                        playCorrect(this.correctSynth, now);
+                    }
                 } catch(e) { console.warn("Audio blocked", e); }
             },
             playWrong: function() {
@@ -913,8 +915,10 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     if (!this.wrongSynth) this.buildSynths();
                     if (Tone.context.state !== 'running') Tone.start();
                     const now = Tone.now();
-                    const styleDef = this.soundStyles[this.style] || this.soundStyles.A;
-                    styleDef.playWrongPattern(this.wrongSynth, now);
+                    const playWrong = this.getWrongSound();
+                    if (typeof playWrong === 'function') {
+                        playWrong(this.wrongSynth, now);
+                    }
                 } catch(e) { console.warn("Audio blocked", e); }
             }
         };
