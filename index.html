@@ -658,18 +658,16 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                         }).connect(shimmer);
 
                         const edgyFilter = new Tone.Filter({
-                            type: 'highpass',
-                            frequency: 450,
-                            Q: 0.9
+                            type: 'lowpass',
+                            frequency: 750,
+                            rolloff: -24,
+                            Q: 0.75
                         }).connect(volumeNode);
 
-                        const wrongSynth = new Tone.MetalSynth({
-                            frequency: 180,
-                            envelope: { attack: 0.005, decay: 0.3, release: 0.2 },
-                            harmonicity: 3.5,
-                            modulationIndex: 14,
-                            resonance: 4000,
-                            octaves: 1.5
+                        const wrongSynth = new Tone.NoiseSynth({
+                            noise: { type: 'pink' },
+                            envelope: { attack: 0.004, decay: 0.22, sustain: 0, release: 0.18 },
+                            volume: -5
                         }).connect(edgyFilter);
 
                         return { correctSynth, wrongSynth, correctSpace: shimmer, wrongFx: edgyFilter };
