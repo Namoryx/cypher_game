@@ -653,6 +653,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             previewDuration: 1200,
             previewTimeout: null,
             activePreviewStyle: null,
+            previewChains: {},
             soundStyles: {
                 A: {
                     label: 'Version A',
@@ -761,7 +762,26 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     if (typeof synth.releaseAll === 'function') synth.releaseAll();
                     if (typeof synth.triggerRelease === 'function') synth.triggerRelease();
                 });
+                Object.values(this.previewChains || {}).forEach((chain) => {
+                    if (!chain || !chain.previewSynth) return;
+                    if (typeof chain.previewSynth.releaseAll === 'function') chain.previewSynth.releaseAll();
+                    if (typeof chain.previewSynth.triggerRelease === 'function') chain.previewSynth.triggerRelease();
+                });
                 this.activePreviewStyle = null;
+            },
+
+            buildPreviewChains: function() {
+                this.previewChains = {};
+                if (!this.volumeNode) return;
+
+                Object.entries(this.soundStyles).forEach(([key, styleDef]) => {
+                    if (typeof styleDef.buildPreview !== 'function') return;
+                    try {
+                        this.previewChains[key] = styleDef.buildPreview(this.volumeNode);
+                    } catch (error) {
+                        console.warn(`Preview chain build failed for style ${key}`, error);
+                    }
+                });
             },
 
             playPreview: function(styleKey, { sample = 'correct' } = {}) {
@@ -779,6 +799,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     }
 
                     if (!this.correctSynth || !this.wrongSynth) this.buildSynths();
+                    if (!this.previewChains || !this.previewChains[normalized]) this.buildPreviewChains();
 
                     this.stopPreview();
                     const now = Tone.now();
