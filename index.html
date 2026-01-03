@@ -573,11 +573,17 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             correctSpace: null,
             volume: 0.6,
             minVolume: 0,
-            maxVolume: 0.9,
+            maxVolume: 1,
             storageKey: 'soundVolume',
 
+            clampVolume: function(value) {
+                const numeric = Number(value);
+                if (!Number.isFinite(numeric)) return this.volume;
+                return Math.min(this.maxVolume, Math.max(this.minVolume, numeric));
+            },
+
             init: function() {
-                this.volume = this.loadVolumePreference();
+                this.volume = this.clampVolume(this.loadVolumePreference());
                 this.volumeNode = new Tone.Gain(this.volume).toDestination();
 
                 this.correctSpace = new Tone.Reverb({
@@ -611,10 +617,10 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 const stored = parseFloat(localStorage.getItem(this.storageKey));
                 const fallback = this.volume;
                 if (!Number.isFinite(stored)) return fallback;
-                return Math.min(this.maxVolume, Math.max(this.minVolume, stored));
+                return this.clampVolume(stored);
             },
             setVolume: function(value, { persist = true } = {}) {
-                const clamped = Math.min(this.maxVolume, Math.max(this.minVolume, Number(value) || 0));
+                const clamped = this.clampVolume(value);
                 this.volume = clamped;
                 if (this.volumeNode) {
                     this.volumeNode.gain.rampTo(clamped, 0.05);
