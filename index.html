@@ -139,6 +139,98 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             border-bottom-width: 4px;
         }
 
+        .sound-chip {
+            border: 2px solid var(--namo-gray);
+            border-bottom-width: 3px;
+            background-color: white;
+            border-radius: 9999px;
+            padding: 10px 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            width: 100%;
+        }
+
+        .sound-chip:hover {
+            background-color: #F7F7F7;
+        }
+
+        .sound-chip.selected {
+            border-color: var(--namo-blue-shadow);
+            background: linear-gradient(90deg, #E6F3FF 0%, #FFFFFF 100%);
+            color: var(--namo-blue);
+            box-shadow: 0 6px 16px rgba(0, 102, 204, 0.12);
+        }
+
+        .sound-chip .play-icon {
+            background-color: #EAF3FF;
+            color: #0066CC;
+            border-radius: 9999px;
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+        }
+
+        .sound-chip .labels {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 1.2;
+        }
+
+        .sound-chip .labels .title {
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .sound-chip .labels .subtitle {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .sound-chip.selected .labels .subtitle {
+            color: #1f5da8;
+        }
+
+        .playing-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            margin-left: auto;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+
+        .playing-indicator span {
+            display: inline-block;
+            width: 3px;
+            height: 12px;
+            background-color: #6B7280;
+            border-radius: 9999px;
+            animation: pulse 0.9s ease-in-out infinite;
+        }
+
+        .sound-chip.selected .playing-indicator span {
+            background-color: #0066CC;
+        }
+
+        .sound-chip.selected .playing-indicator,
+        .sound-chip.playing .playing-indicator {
+            opacity: 1;
+        }
+
+        .playing-indicator span:nth-child(2) { animation-delay: 0.1s; }
+        .playing-indicator span:nth-child(3) { animation-delay: 0.2s; }
+
+        @keyframes pulse {
+            0%, 100% { transform: scaleY(0.6); opacity: 0.7; }
+            50% { transform: scaleY(1.2); opacity: 1; }
+        }
+
         /* Animation Utilities */
         .fade-in { animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn {
@@ -468,18 +560,30 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
         </div>
 <p class="text-xs text-gray-500 leading-relaxed">정답/오답 효과음에 공통 적용됩니다. 원하는 크기로 바로 조절해보세요.</p>
         <div class="w-full border-t border-gray-100 pt-4">
-            <div class="flex items-center justify-between text-sm font-bold text-gray-600 mb-2">
+            <div class="flex items-center justify-between text-sm font-bold text-gray-600 mb-3">
                 <span>Sound Style (Version A/B)</span>
                 <span class="text-[#0066CC] text-xs" id="sfx-style-label">Version A</span>
             </div>
-            <div class="grid grid-cols-2 gap-3" id="sfx-style-options">
-                <button type="button" class="option-card rounded-xl p-3 flex flex-col items-start bg-white" data-sfx-style="A">
-                    <span class="text-xs font-bold text-gray-500 uppercase tracking-wide">Version A</span>
-                    <span class="text-sm text-gray-600 text-left">맑은 종소리와 잔잔한 울림.</span>
+            <div class="flex flex-col gap-2" id="sfx-style-options">
+                <button type="button" class="sound-chip" data-sfx-style="A">
+                    <span class="material-symbols-outlined play-icon">play_arrow</span>
+                    <span class="labels">
+                        <span class="title">Version A</span>
+                        <span class="subtitle">밝음 · 잔잔</span>
+                    </span>
+                    <span class="playing-indicator" aria-hidden="true">
+                        <span></span><span></span><span></span>
+                    </span>
                 </button>
-                <button type="button" class="option-card rounded-xl p-3 flex flex-col items-start bg-white" data-sfx-style="B">
-                    <span class="text-xs font-bold text-gray-500 uppercase tracking-wide">Version B</span>
-                    <span class="text-sm text-gray-600 text-left">선명한 듀오톤과 금속성 여운.</span>
+                <button type="button" class="sound-chip" data-sfx-style="B">
+                    <span class="material-symbols-outlined play-icon">play_arrow</span>
+                    <span class="labels">
+                        <span class="title">Version B</span>
+                        <span class="subtitle">선명 · 메탈</span>
+                    </span>
+                    <span class="playing-indicator" aria-hidden="true">
+                        <span></span><span></span><span></span>
+                    </span>
                 </button>
             </div>
         </div>
@@ -596,12 +700,14 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             storageKey: 'soundVolume',
             styleStorageKey: 'sfxStyle',
             style: 'A',
+            previewTimeout: null,
+            activePreviewStyle: null,
             soundStyles: {
                 A: {
                     label: 'Version A',
                     build: (volumeNode) => {
-                        const correctGain = new Tone.Gain(0.82).connect(volumeNode);
-                        const wrongGain = new Tone.Gain(0.78).connect(volumeNode);
+                        const correctGain = new Tone.Gain(0.9).connect(volumeNode);
+                        const wrongGain = new Tone.Gain(0.86).connect(volumeNode);
 
                         const correctSpace = new Tone.Reverb({
                             decay: 1.2,
@@ -647,8 +753,8 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 B: {
                     label: 'Version B',
                     build: (volumeNode) => {
-                        const correctGain = new Tone.Gain(0.74).connect(volumeNode);
-                        const wrongGain = new Tone.Gain(0.7).connect(volumeNode);
+                        const correctGain = new Tone.Gain(0.88).connect(volumeNode);
+                        const wrongGain = new Tone.Gain(0.85).connect(volumeNode);
 
                         const shimmer = new Tone.PingPongDelay({
                             delayTime: 0.08,
@@ -664,22 +770,21 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                             voice1: { oscillator: { type: 'sawtooth' }, envelope: { attack: 0.02, decay: 0.25, sustain: 0.2, release: 0.5 } }
                         }).connect(shimmer);
 
-                        const edgyFilter = new Tone.Filter({
-                            type: 'highpass',
-                            frequency: 450,
-                            Q: 0.9
+                        const dampFilter = new Tone.Filter({
+                            type: 'lowpass',
+                            frequency: 240,
+                            rolloff: -24,
+                            Q: 0.7
                         }).connect(wrongGain);
 
-                        const wrongSynth = new Tone.MetalSynth({
-                            frequency: 180,
-                            envelope: { attack: 0.005, decay: 0.3, release: 0.2 },
-                            harmonicity: 3.5,
-                            modulationIndex: 14,
-                            resonance: 4000,
-                            octaves: 1.5
-                        }).connect(edgyFilter);
+                        const wrongSynth = new Tone.MembraneSynth({
+                            pitchDecay: 0.01,
+                            octaves: 1.6,
+                            oscillator: { type: 'sine' },
+                            envelope: { attack: 0.003, decay: 0.48, sustain: 0, release: 0.28 }
+                        }).connect(dampFilter);
 
-                        return { correctSynth, wrongSynth, correctSpace: shimmer, wrongFx: edgyFilter, correctGain, wrongGain };
+                        return { correctSynth, wrongSynth, correctSpace: shimmer, wrongFx: dampFilter, correctGain, wrongGain };
                     },
                     playCorrectPattern: (synth, now) => {
                         if (!synth) return;
@@ -689,10 +794,51 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     },
                     playWrongPattern: (synth, now) => {
                         if (!synth) return;
-                        synth.triggerAttackRelease("A2", 0.2, now);
-                        synth.triggerAttackRelease("F2", 0.25, now + 0.12);
+                        synth.triggerAttackRelease("C2", 0.4, now);
+                        synth.triggerAttackRelease("G1", 0.3, now + 0.1);
                     }
                 }
+            },
+
+            stopPreview: function() {
+                if (this.previewTimeout) {
+                    clearTimeout(this.previewTimeout);
+                    this.previewTimeout = null;
+                }
+                [this.correctSynth, this.wrongSynth].forEach((synth) => {
+                    if (!synth) return;
+                    if (typeof synth.releaseAll === 'function') synth.releaseAll();
+                    if (typeof synth.triggerRelease === 'function') synth.triggerRelease();
+                });
+                this.activePreviewStyle = null;
+            },
+
+            playPreview: function(styleKey, { sample = 'correct' } = {}) {
+                try {
+                    if (!this.volumeNode) return;
+                    if (Tone.context.state !== 'running') Tone.start();
+
+                    const normalized = this.soundStyles[styleKey] ? styleKey : 'A';
+                    const styleDef = this.soundStyles[normalized] || this.soundStyles.A;
+                    if (!styleDef) return;
+
+                    if (normalized !== this.style) {
+                        this.style = normalized;
+                        this.buildSynths();
+                    }
+
+                    if (!this.correctSynth || !this.wrongSynth) this.buildSynths();
+
+                    this.stopPreview();
+                    const now = Tone.now();
+                    if (sample === 'wrong') {
+                        styleDef.playWrongPattern(this.wrongSynth, now);
+                    } else {
+                        styleDef.playCorrectPattern(this.correctSynth, now);
+                    }
+                    this.activePreviewStyle = normalized;
+                    this.previewTimeout = setTimeout(() => this.stopPreview(), 1200);
+                } catch(e) { console.warn("Audio blocked", e); }
             },
 
             clampVolume: function(value) {
@@ -764,6 +910,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             },
             playCorrect: function() {
                 try {
+                    this.stopPreview();
                     if (!this.correctSynth) this.buildSynths();
                     if (Tone.context.state !== 'running') Tone.start();
                     const now = Tone.now();
@@ -773,6 +920,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             },
             playWrong: function() {
                 try {
+                    this.stopPreview();
                     if (!this.wrongSynth) this.buildSynths();
                     if (Tone.context.state !== 'running') Tone.start();
                     const now = Tone.now();
@@ -913,6 +1061,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 if (!container) return;
                 const label = document.getElementById('sfx-style-label');
                 const options = Array.from(container.querySelectorAll('[data-sfx-style]'));
+                let previewIndicatorTimeout = null;
 
                 const syncSelection = () => {
                     const current = SoundManager.getStyle();
@@ -922,11 +1071,26 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     if (label) label.textContent = `Version ${current}`;
                 };
 
+                const showPreviewIndicator = (styleKey) => {
+                    if (previewIndicatorTimeout) {
+                        clearTimeout(previewIndicatorTimeout);
+                        previewIndicatorTimeout = null;
+                    }
+                    options.forEach((option) => {
+                        option.classList.toggle('playing', option.dataset.sfxStyle === styleKey);
+                    });
+                    previewIndicatorTimeout = setTimeout(() => {
+                        options.forEach((option) => option.classList.remove('playing'));
+                    }, 1200);
+                };
+
                 options.forEach((option) => {
                     option.addEventListener('click', () => {
                         const chosen = option.dataset.sfxStyle;
                         SoundManager.setStyle(chosen);
+                        SoundManager.playPreview(chosen);
                         syncSelection();
+                        showPreviewIndicator(chosen);
                     });
                 });
 
