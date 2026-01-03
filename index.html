@@ -794,7 +794,8 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             playPreview: async function(styleKey, { sample = 'correct' } = {}) {
                 try {
                     if (!this.volumeNode) return;
-                    await this.ensureAudioReady();
+                    const ready = await this.ensureAudioReady();
+                    if (!ready) return;
 
                     const { normalized, styleDef } = this.getStyleDefinition(styleKey);
                     if (!styleDef) return;
@@ -834,9 +835,36 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             },
 
             ensureAudioReady: async function() {
-                if (Tone.context.state !== 'running') {
+                const ctx = Tone?.context;
+                if (ctx?.state === 'running') return true;
+
+                try {
                     await Tone.start();
+                } catch (e) {
+                    console.warn('Tone.start failed', e);
                 }
+
+                if (ctx?.state !== 'running' && typeof ctx?.resume === 'function') {
+                    try {
+                        await ctx.resume();
+                    } catch (e) {
+                        console.warn('Tone context resume failed', e);
+                    }
+                }
+
+                if (ctx?.state !== 'running') {
+                    try {
+                        const silentGain = new Tone.Gain(0).connect(this.volumeNode || Tone.Destination);
+                        const osc = new Tone.Oscillator(440).connect(silentGain);
+                        osc.start().stop("+0.05");
+                        osc.dispose();
+                        silentGain.dispose();
+                    } catch (e) {
+                        console.warn('Audio priming failed', e);
+                    }
+                }
+
+                return ctx?.state === 'running';
             },
 
             computeRmsDb: function(audioBuffer) {
@@ -993,7 +1021,8 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 try {
                     this.stopPreview();
                     if (!this.correctSynth) this.buildSynths();
-                    await this.ensureAudioReady();
+                    const ready = await this.ensureAudioReady();
+                    if (!ready) return;
                     const now = Tone.now();
                     const { styleDef } = this.getStyleDefinition();
                     styleDef.playCorrectPattern(styleDef.getCorrectSound(this.correctSynth), now);
@@ -1003,7 +1032,8 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 try {
                     this.stopPreview();
                     if (!this.wrongSynth) this.buildSynths();
-                    await this.ensureAudioReady();
+                    const ready = await this.ensureAudioReady();
+                    if (!ready) return;
                     const now = Tone.now();
                     const { styleDef } = this.getStyleDefinition();
                     styleDef.playWrongPattern(styleDef.getWrongSound(this.wrongSynth), now);
@@ -1019,12 +1049,12 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             const showHint = () => { if (hintEl) hintEl.classList.remove('hidden'); };
 
             const attemptStart = async () => {
+                let running = false;
                 try {
-                    await SoundManager.ensureAudioReady();
+                    running = await SoundManager.ensureAudioReady();
                 } catch (error) {
                     console.warn('Audio activation failed', error);
                 }
-                const running = Tone.context.state === 'running';
                 if (running) {
                     hideHint();
                 } else {
