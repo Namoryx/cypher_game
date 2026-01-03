@@ -1088,7 +1088,6 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 options.forEach((option) => {
                     option.addEventListener('click', () => {
                         const chosen = option.dataset.sfxStyle;
-                        SoundManager.setStyle(chosen);
                         SoundManager.playPreview(chosen);
                         syncSelection();
                         showPreviewIndicator(chosen);
