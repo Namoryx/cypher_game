@@ -657,8 +657,8 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 A: {
                     label: 'Version A',
                     build: (volumeNode) => {
-                        const correctGain = new Tone.Gain(0.9).connect(volumeNode);
-                        const wrongGain = new Tone.Gain(0.86).connect(volumeNode);
+                        const correctGain = new Tone.Gain(0.85).connect(volumeNode);
+                        const wrongGain = new Tone.Gain(0.82).connect(volumeNode);
 
                         const correctSpace = new Tone.Reverb({
                             decay: 1.2,
@@ -706,8 +706,8 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 B: {
                     label: 'Version B',
                     build: (volumeNode) => {
-                        const correctGain = new Tone.Gain(0.88).connect(volumeNode);
-                        const wrongGain = new Tone.Gain(0.85).connect(volumeNode);
+                        const correctGain = new Tone.Gain(0.85).connect(volumeNode);
+                        const wrongGain = new Tone.Gain(0.82).connect(volumeNode);
 
                         const shimmer = new Tone.PingPongDelay({
                             delayTime: 0.08,
