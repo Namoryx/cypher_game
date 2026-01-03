@@ -749,6 +749,19 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                         if (!synth) return;
                         synth.triggerAttackRelease("D2", 0.45, now);
                         synth.triggerAttackRelease("A1", 0.3, now + 0.12);
+                    },
+                    buildPreview: (volumeNode) => {
+                        const previewGain = new Tone.Gain(0.9).connect(volumeNode);
+                        const previewSynth = new Tone.PolySynth(Tone.Synth, {
+                            oscillator: { type: 'sine' },
+                            envelope: { attack: 0.01, decay: 0.2, sustain: 0.3, release: 0.4 }
+                        }).connect(previewGain);
+                        return { previewSynth, previewGain };
+                    },
+                    playPreviewPattern: ({ previewSynth }, now) => {
+                        if (!previewSynth) return;
+                        previewSynth.triggerAttackRelease(["C5", "E5"], 0.35, now);
+                        previewSynth.triggerAttackRelease(["G5"], 0.35, now + 0.3);
                     }
                 },
                 B: {
@@ -853,6 +866,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 this.style = this.loadStylePreference();
                 this.volumeNode = new Tone.Gain(this.volume).toDestination();
                 this.buildSynths();
+                this.buildPreviewChains();
             },
             loadVolumePreference: function() {
                 const stored = parseFloat(localStorage.getItem(this.storageKey));
