@@ -858,10 +858,28 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 this.setupVolumeUI();
                 this.setupSoundStyleUI();
                 document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape') this.closeModal();
+                    if (e.key === 'Escape') this.closeAllModals();
                 });
+                this.closeAllModals();
                 this.renderTracks();
                 this.preloadTrackCounts();
+            },
+
+            showModal: function(modalId) {
+                const modal = document.getElementById(modalId);
+                if (!modal) return;
+                modal.classList.remove('hidden', 'pointer-events-none');
+            },
+
+            hideModal: function(modalId) {
+                const modal = document.getElementById(modalId);
+                if (!modal) return;
+                modal.classList.add('hidden', 'pointer-events-none');
+            },
+
+            closeAllModals: function() {
+                this.hideModal('quit-modal');
+                this.hideModal('settings-modal');
             },
 
             preloadTrackCounts: async function() {
@@ -1259,8 +1277,8 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 }
             },
 
-            requestQuit: function() { document.getElementById('quit-modal').classList.remove('hidden'); },
-            closeModal: function() { document.getElementById('quit-modal').classList.add('hidden'); },
+            requestQuit: function() { this.showModal('quit-modal'); },
+            closeModal: function() { this.hideModal('quit-modal'); },
             confirmQuit: function() {
                 this.closeModal();
                 this.state.currentStep = 0;
@@ -1270,16 +1288,12 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             handleModalClick: function(e) { if (e.target.id === 'quit-modal') this.closeModal(); },
 
             openSettings: function() {
-                const modal = document.getElementById('settings-modal');
-                if (!modal) return;
-                modal.classList.remove('hidden');
+                this.showModal('settings-modal');
                 this.syncVolumeSlider();
                 if (typeof this.syncSoundStyleSelection === 'function') this.syncSoundStyleSelection();
             },
             closeSettings: function() {
-                const modal = document.getElementById('settings-modal');
-                if (!modal) return;
-                modal.classList.add('hidden');
+                this.hideModal('settings-modal');
             },
             handleSettingsModal: function(e) { if (e.target.id === "settings-modal") this.closeSettings(); },
 
