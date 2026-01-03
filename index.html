@@ -457,15 +457,15 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 </div>
 <div class="w-full">
 <div class="flex items-center justify-between text-sm font-bold text-gray-600 mb-2">
-<span>사운드 볼륨</span>
-<span class="text-[#0066CC]" id="volume-value">--%</span>
-</div>
-<input aria-label="사운드 볼륨" class="w-full accent-[#0066CC] cursor-pointer" id="volume-slider" max="1" min="0.1" step="0.01" type="range" value="0.38">
-<div class="flex justify-between text-[11px] text-gray-400 font-bold mt-1">
-<span>조용하게</span>
-<span>또렷하게</span>
-</div>
-</div>
+                <span>SFX 마스터 볼륨</span>
+                <span class="text-[#0066CC]" id="volume-value">--%</span>
+            </div>
+            <input aria-label="사운드 볼륨" class="w-full accent-[#0066CC] cursor-pointer" id="volume-slider" max="1" min="0" step="0.01" type="range" value="0.6">
+            <div class="flex justify-between text-[11px] text-gray-400 font-bold mt-1">
+                <span>조용하게</span>
+                <span>또렷하게</span>
+            </div>
+        </div>
 <p class="text-xs text-gray-500 leading-relaxed">정답/오답 효과음에 공통 적용됩니다. 원하는 크기로 바로 조절해보세요.</p>
 </div>
 </div>
@@ -571,9 +571,9 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             wrongSynth: null,
             volumeNode: null,
             correctSpace: null,
-            volume: 0.38,
-            minVolume: 0.1,
-            maxVolume: 1,
+            volume: 0.6,
+            minVolume: 0,
+            maxVolume: 0.9,
             storageKey: 'soundVolume',
 
             init: function() {
@@ -614,7 +614,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 return Math.min(this.maxVolume, Math.max(this.minVolume, stored));
             },
             setVolume: function(value, { persist = true } = {}) {
-                const clamped = Math.min(this.maxVolume, Math.max(this.minVolume, value || 0));
+                const clamped = Math.min(this.maxVolume, Math.max(this.minVolume, Number(value) || 0));
                 this.volume = clamped;
                 if (this.volumeNode) {
                     this.volumeNode.gain.rampTo(clamped, 0.05);
