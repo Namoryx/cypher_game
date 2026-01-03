@@ -786,7 +786,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     const playWrong = this.getWrongSound(normalized);
                     if (sample === 'wrong' && typeof playWrong === 'function') {
                         playWrong(this.wrongSynth, now);
-                    } else if (typeof playCorrect === 'function') {
+                    } else if (sample !== 'wrong' && typeof playCorrect === 'function') {
                         playCorrect(this.correctSynth, now);
                     }
                     this.activePreviewStyle = normalized;
