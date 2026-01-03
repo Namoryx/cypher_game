@@ -842,7 +842,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             },
             getStyleDef: function(styleKey) {
                 const normalized = this.normalizeStyle(styleKey);
-                return this.soundStyles[normalized] || this.soundStyles.A;
+                return this.soundStyles[normalized];
             },
             getCorrectSound: function(styleKey = this.style) {
                 const styleDef = this.getStyleDef(styleKey);
