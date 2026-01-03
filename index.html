@@ -455,7 +455,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 <span class="material-symbols-outlined text-2xl">close</span>
 </button>
 </div>
-<div class="w-full">
+        <div class="w-full">
 <div class="flex items-center justify-between text-sm font-bold text-gray-600 mb-2">
                 <span>SFX 마스터 볼륨</span>
                 <span class="text-[#0066CC]" id="volume-value">--%</span>
@@ -467,6 +467,22 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             </div>
         </div>
 <p class="text-xs text-gray-500 leading-relaxed">정답/오답 효과음에 공통 적용됩니다. 원하는 크기로 바로 조절해보세요.</p>
+        <div class="w-full border-t border-gray-100 pt-4">
+            <div class="flex items-center justify-between text-sm font-bold text-gray-600 mb-2">
+                <span>Sound Style (Version A/B)</span>
+                <span class="text-[#0066CC] text-xs" id="sfx-style-label">Version A</span>
+            </div>
+            <div class="grid grid-cols-2 gap-3" id="sfx-style-options">
+                <button type="button" class="option-card rounded-xl p-3 flex flex-col items-start bg-white" data-sfx-style="A">
+                    <span class="text-xs font-bold text-gray-500 uppercase tracking-wide">Version A</span>
+                    <span class="text-sm text-gray-600 text-left">맑은 종소리와 잔잔한 울림.</span>
+                </button>
+                <button type="button" class="option-card rounded-xl p-3 flex flex-col items-start bg-white" data-sfx-style="B">
+                    <span class="text-xs font-bold text-gray-500 uppercase tracking-wide">Version B</span>
+                    <span class="text-sm text-gray-600 text-left">선명한 듀오톤과 금속성 여운.</span>
+                </button>
+            </div>
+        </div>
 </div>
 </div>
 <!-- ================= MODAL (Quit Confirmation) ================= -->
@@ -571,10 +587,105 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             wrongSynth: null,
             volumeNode: null,
             correctSpace: null,
+            wrongFx: null,
             volume: 0.6,
             minVolume: 0,
             maxVolume: 1,
             storageKey: 'soundVolume',
+            styleStorageKey: 'sfxStyle',
+            style: 'A',
+            soundStyles: {
+                A: {
+                    label: 'Version A',
+                    build: (volumeNode) => {
+                        const correctSpace = new Tone.Reverb({
+                            decay: 1.2,
+                            wet: 0.15,
+                            preDelay: 0.02
+                        }).connect(volumeNode);
+
+                        const correctSynth = new Tone.AMSynth({
+                            oscillator: { type: "sine" },
+                            harmonicity: 2,
+                            detune: 4,
+                            envelope: { attack: 0.01, decay: 0.2, sustain: 0.15, release: 0.7 }
+                        }).connect(correctSpace);
+
+                        const mellowFilter = new Tone.Filter({
+                            type: "lowpass",
+                            frequency: 180,
+                            rolloff: -24,
+                            Q: 0.8
+                        }).connect(volumeNode);
+
+                        const wrongSynth = new Tone.MembraneSynth({
+                            pitchDecay: 0.008,
+                            octaves: 1.2,
+                            oscillator: { type: "sine" },
+                            envelope: { attack: 0.005, decay: 0.35, sustain: 0, release: 0.25 }
+                        }).connect(mellowFilter);
+
+                        return { correctSynth, wrongSynth, correctSpace, wrongFx: mellowFilter };
+                    },
+                    playCorrectPattern: (synth, now) => {
+                        if (!synth) return;
+                        synth.triggerAttackRelease("A5", 0.25, now);
+                        synth.triggerAttackRelease("E6", 0.2, now + 0.08);
+                        synth.triggerAttackRelease("B5", 0.3, now + 0.16);
+                    },
+                    playWrongPattern: (synth, now) => {
+                        if (!synth) return;
+                        synth.triggerAttackRelease("D2", 0.45, now);
+                        synth.triggerAttackRelease("A1", 0.3, now + 0.12);
+                    }
+                },
+                B: {
+                    label: 'Version B',
+                    build: (volumeNode) => {
+                        const shimmer = new Tone.PingPongDelay({
+                            delayTime: 0.08,
+                            feedback: 0.25,
+                            wet: 0.25
+                        }).connect(volumeNode);
+
+                        const correctSynth = new Tone.DuoSynth({
+                            vibratoAmount: 0.2,
+                            vibratoRate: 7,
+                            harmonicity: 1.8,
+                            voice0: { oscillator: { type: 'triangle' }, envelope: { attack: 0.02, decay: 0.25, sustain: 0.2, release: 0.5 } },
+                            voice1: { oscillator: { type: 'sawtooth' }, envelope: { attack: 0.02, decay: 0.25, sustain: 0.2, release: 0.5 } }
+                        }).connect(shimmer);
+
+                        const edgyFilter = new Tone.Filter({
+                            type: 'highpass',
+                            frequency: 450,
+                            Q: 0.9
+                        }).connect(volumeNode);
+
+                        const wrongSynth = new Tone.MetalSynth({
+                            frequency: 180,
+                            envelope: { attack: 0.005, decay: 0.3, release: 0.2 },
+                            harmonicity: 3.5,
+                            modulationIndex: 14,
+                            resonance: 4000,
+                            octaves: 1.5
+                        }).connect(edgyFilter);
+
+                        return { correctSynth, wrongSynth, correctSpace: shimmer, wrongFx: edgyFilter };
+                    },
+                    playCorrectPattern: (synth, now) => {
+                        if (!synth) return;
+                        synth.triggerAttackRelease("E5", 0.25, now);
+                        synth.triggerAttackRelease("B5", 0.22, now + 0.1);
+                        synth.triggerAttackRelease("G6", 0.28, now + 0.2);
+                    },
+                    playWrongPattern: (synth, now) => {
+                        if (!synth) return;
+                        synth.triggerAttackRelease("A2", 0.2, now);
+                        synth.triggerAttackRelease("F2", 0.25, now + 0.12);
+                    }
+                }
+            },
 
             clampVolume: function(value) {
                 const numeric = Number(value);
@@ -585,39 +696,19 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
             init: function() {
                 this.volume = this.clampVolume(this.loadVolumePreference());
                 this.volumeNode = new Tone.Gain(this.volume).toDestination();
-
-                this.correctSpace = new Tone.Reverb({
-                    decay: 1.2,
-                    wet: 0.15,
-                    preDelay: 0.02
-                }).connect(this.volumeNode);
-
-                this.correctSynth = new Tone.AMSynth({
-                    oscillator: { type: "sine" },
-                    harmonicity: 2,
-                    detune: 4,
-                    envelope: { attack: 0.01, decay: 0.2, sustain: 0.15, release: 0.7 }
-                }).connect(this.correctSpace);
-
-                const mellowFilter = new Tone.Filter({
-                    type: "lowpass",
-                    frequency: 180,
-                    rolloff: -24,
-                    Q: 0.8
-                }).connect(this.volumeNode);
-
-                this.wrongSynth = new Tone.MembraneSynth({
-                    pitchDecay: 0.008,
-                    octaves: 1.2,
-                    oscillator: { type: "sine" },
-                    envelope: { attack: 0.005, decay: 0.35, sustain: 0, release: 0.25 }
-                }).connect(mellowFilter);
+                this.style = this.loadStylePreference();
+                this.buildSynths();
             },
             loadVolumePreference: function() {
                 const stored = parseFloat(localStorage.getItem(this.storageKey));
                 const fallback = this.volume;
                 if (!Number.isFinite(stored)) return fallback;
                 return this.clampVolume(stored);
+            },
+            loadStylePreference: function() {
+                const stored = localStorage.getItem(this.styleStorageKey);
+                if (stored && this.soundStyles[stored]) return stored;
+                return this.style;
             },
             setVolume: function(value, { persist = true } = {}) {
                 const clamped = this.clampVolume(value);
@@ -629,24 +720,54 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                     localStorage.setItem(this.storageKey, clamped);
                 }
             },
+            setStyle: function(styleKey, { persist = true } = {}) {
+                const normalized = this.soundStyles[styleKey] ? styleKey : 'A';
+                if (normalized !== this.style) {
+                    this.style = normalized;
+                    this.buildSynths();
+                }
+                if (persist) {
+                    localStorage.setItem(this.styleStorageKey, normalized);
+                }
+            },
             getVolume: function() {
                 return this.volume;
             },
+            getStyle: function() {
+                return this.style;
+            },
+            disposeSynths: function() {
+                [this.correctSynth, this.wrongSynth, this.correctSpace, this.wrongFx].forEach((node) => {
+                    if (node && typeof node.dispose === 'function') node.dispose();
+                });
+                this.correctSynth = this.wrongSynth = this.correctSpace = this.wrongFx = null;
+            },
+            buildSynths: function() {
+                if (!this.volumeNode) return;
+                this.disposeSynths();
+                const styleDef = this.soundStyles[this.style] || this.soundStyles.A;
+                const chain = styleDef.build(this.volumeNode);
+                this.correctSynth = chain.correctSynth;
+                this.correctSpace = chain.correctSpace || null;
+                this.wrongSynth = chain.wrongSynth;
+                this.wrongFx = chain.wrongFx || null;
+            },
             playCorrect: function() {
                 try {
+                    if (!this.correctSynth) this.buildSynths();
                     if (Tone.context.state !== 'running') Tone.start();
                     const now = Tone.now();
-                    this.correctSynth.triggerAttackRelease("A5", 0.25, now);
-                    this.correctSynth.triggerAttackRelease("E6", 0.2, now + 0.08);
-                    this.correctSynth.triggerAttackRelease("B5", 0.3, now + 0.16);
+                    const styleDef = this.soundStyles[this.style] || this.soundStyles.A;
+                    styleDef.playCorrectPattern(this.correctSynth, now);
                 } catch(e) { console.warn("Audio blocked", e); }
             },
             playWrong: function() {
                 try {
+                    if (!this.wrongSynth) this.buildSynths();
                     if (Tone.context.state !== 'running') Tone.start();
                     const now = Tone.now();
-                    this.wrongSynth.triggerAttackRelease("D2", 0.45, now);
-                    this.wrongSynth.triggerAttackRelease("A1", 0.3, now + 0.12);
+                    const styleDef = this.soundStyles[this.style] || this.soundStyles.A;
+                    styleDef.playWrongPattern(this.wrongSynth, now);
                 } catch(e) { console.warn("Audio blocked", e); }
             }
         };
@@ -708,6 +829,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 
                 SoundManager.init();
                 this.setupVolumeUI();
+                this.setupSoundStyleUI();
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape') this.closeModal();
                 });
@@ -757,6 +879,31 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 if (!valueEl) return;
                 const pct = Math.round((volume || 0) * 100);
                 valueEl.textContent = `${pct}%`;
+            },
+            setupSoundStyleUI: function() {
+                const container = document.getElementById('sfx-style-options');
+                if (!container) return;
+                const label = document.getElementById('sfx-style-label');
+                const options = Array.from(container.querySelectorAll('[data-sfx-style]'));
+
+                const syncSelection = () => {
+                    const current = SoundManager.getStyle();
+                    options.forEach((option) => {
+                        option.classList.toggle('selected', option.dataset.sfxStyle === current);
+                    });
+                    if (label) label.textContent = `Version ${current}`;
+                };
+
+                options.forEach((option) => {
+                    option.addEventListener('click', () => {
+                        const chosen = option.dataset.sfxStyle;
+                        SoundManager.setStyle(chosen);
+                        syncSelection();
+                    });
+                });
+
+                this.syncSoundStyleSelection = syncSelection;
+                syncSelection();
             },
 
             // --- Database / API Fetch Simulation ---
@@ -1100,6 +1247,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 if (!modal) return;
                 modal.classList.remove('hidden');
                 this.syncVolumeSlider();
+                if (typeof this.syncSoundStyleSelection === 'function') this.syncSoundStyleSelection();
             },
             closeSettings: function() {
                 const modal = document.getElementById('settings-modal');
