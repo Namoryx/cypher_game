@@ -585,6 +585,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
         const SoundManager = {
             correctSynth: null,
             wrongSynth: null,
+            correctGain: null,
             wrongGain: null,
             volumeNode: null,
             correctSpace: null,
@@ -599,11 +600,14 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 A: {
                     label: 'Version A',
                     build: (volumeNode) => {
+                        const correctGain = new Tone.Gain(0.82).connect(volumeNode);
+                        const wrongGain = new Tone.Gain(0.78).connect(volumeNode);
+
                         const correctSpace = new Tone.Reverb({
                             decay: 1.2,
                             wet: 0.15,
                             preDelay: 0.02
-                        }).connect(volumeNode);
+                        }).connect(correctGain);
 
                         const correctSynth = new Tone.AMSynth({
                             oscillator: { type: "sine" },
@@ -617,7 +621,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                             frequency: 180,
                             rolloff: -24,
                             Q: 0.8
-                        }).connect(volumeNode);
+                        }).connect(wrongGain);
 
                         const wrongSynth = new Tone.MembraneSynth({
                             pitchDecay: 0.008,
@@ -626,7 +630,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                             envelope: { attack: 0.005, decay: 0.35, sustain: 0, release: 0.25 }
                         }).connect(mellowFilter);
 
-                        return { correctSynth, wrongSynth, correctSpace, wrongFx: mellowFilter };
+                        return { correctSynth, wrongSynth, correctSpace, wrongFx: mellowFilter, correctGain, wrongGain };
                     },
                     playCorrectPattern: (synth, now) => {
                         if (!synth) return;
@@ -643,11 +647,14 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 B: {
                     label: 'Version B',
                     build: (volumeNode) => {
+                        const correctGain = new Tone.Gain(0.74).connect(volumeNode);
+                        const wrongGain = new Tone.Gain(0.7).connect(volumeNode);
+
                         const shimmer = new Tone.PingPongDelay({
                             delayTime: 0.08,
                             feedback: 0.25,
                             wet: 0.25
-                        }).connect(volumeNode);
+                        }).connect(correctGain);
 
                         const correctSynth = new Tone.DuoSynth({
                             vibratoAmount: 0.2,
@@ -661,7 +668,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                             type: 'highpass',
                             frequency: 450,
                             Q: 0.9
-                        }).connect(volumeNode);
+                        }).connect(wrongGain);
 
                         const wrongSynth = new Tone.MetalSynth({
                             frequency: 180,
@@ -672,7 +679,7 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                             octaves: 1.5
                         }).connect(edgyFilter);
 
-                        return { correctSynth, wrongSynth, correctSpace: shimmer, wrongFx: edgyFilter };
+                        return { correctSynth, wrongSynth, correctSpace: shimmer, wrongFx: edgyFilter, correctGain, wrongGain };
                     },
                     playCorrectPattern: (synth, now) => {
                         if (!synth) return;
@@ -696,35 +703,9 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
 
             init: function() {
                 this.volume = this.clampVolume(this.loadVolumePreference());
+                this.style = this.loadStylePreference();
                 this.volumeNode = new Tone.Gain(this.volume).toDestination();
-
-                this.correctSpace = new Tone.Reverb({
-                    decay: 1.2,
-                    wet: 0.15,
-                    preDelay: 0.02
-                }).connect(this.volumeNode);
-
-                this.correctSynth = new Tone.AMSynth({
-                    oscillator: { type: "sine" },
-                const WRONG_ANSWER_BOOST = 1.25;
-                const MELLOW_FILTER_PARAMS = {
-                    type: "lowpass",
-                    frequency: 210,
-                    rolloff: -24,
-                    Q: 0.95
-                };
-                const WRONG_SYNTH_PARAMS = {
-                    pitchDecay: 0.01,
-                    octaves: 1.2,
-                    oscillator: { type: "sine" },
-                    envelope: { attack: 0.004, decay: 0.32, sustain: 0.08, release: 0.22 }
-                };
-
-                this.wrongGain = new Tone.Gain(WRONG_ANSWER_BOOST).connect(this.volumeNode);
-
-                const mellowFilter = new Tone.Filter(MELLOW_FILTER_PARAMS).connect(this.wrongGain);
-
-                this.wrongSynth = new Tone.MembraneSynth(WRONG_SYNTH_PARAMS).connect(mellowFilter);
+                this.buildSynths();
             },
             loadVolumePreference: function() {
                 const stored = parseFloat(localStorage.getItem(this.storageKey));
@@ -764,10 +745,10 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 return this.style;
             },
             disposeSynths: function() {
-                [this.correctSynth, this.wrongSynth, this.correctSpace, this.wrongFx].forEach((node) => {
+                [this.correctSynth, this.wrongSynth, this.correctSpace, this.wrongFx, this.correctGain, this.wrongGain].forEach((node) => {
                     if (node && typeof node.dispose === 'function') node.dispose();
                 });
-                this.correctSynth = this.wrongSynth = this.correctSpace = this.wrongFx = null;
+                this.correctSynth = this.wrongSynth = this.correctSpace = this.wrongFx = this.correctGain = this.wrongGain = null;
             },
             buildSynths: function() {
                 if (!this.volumeNode) return;
@@ -778,6 +759,8 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 this.correctSpace = chain.correctSpace || null;
                 this.wrongSynth = chain.wrongSynth;
                 this.wrongFx = chain.wrongFx || null;
+                this.correctGain = chain.correctGain || null;
+                this.wrongGain = chain.wrongGain || null;
             },
             playCorrect: function() {
                 try {
