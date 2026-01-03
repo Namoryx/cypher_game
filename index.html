@@ -1102,7 +1102,11 @@ a);requestAnimationFrame(function(){g(document.body)})})}var l=["material-icons"
                 options.forEach((option) => {
                     option.addEventListener('click', () => {
                         const chosen = option.dataset.sfxStyle;
-                        SoundManager.setStyle(chosen, { persist: true });
+                        try {
+                            SoundManager.setStyle(chosen, { persist: true });
+                        } catch (e) {
+                            console.warn('Failed to persist sound style setting.', e);
+                        }
                         const appliedStyle = SoundManager.getStyle();
                         const isDevHost = window?.location && ['localhost', '127.0.0.1'].includes(window.location.hostname);
                         if (isDevHost) {
